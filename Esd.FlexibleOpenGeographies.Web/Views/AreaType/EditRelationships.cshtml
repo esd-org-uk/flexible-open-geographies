@@ -1,0 +1,125 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.AreaTypeEditRelationshipsModel
+
+@{
+    ViewBag.Title = "Edit relationships";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var hasParents = false;
+    var hasChildren = false;
+}
+
+<div class="alert alert-info alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <p>
+        <span class="glyphicon glyphicon-info-sign"></span> The primary child type is the one used for calculating aggregated metrics and displaying maps.
+        Covers whole should be checked if the child areas cover the whole of the parent area on a map.
+    </p>
+</div>
+
+<div class="page-header"><h2>Edit existing area type relationships</h2></div>
+
+<div class="col-xs-12">
+    @using (Html.BeginForm("EditRelationships", "AreaType", FormMethod.Post, new { @class = "form-horizontal", @role = "form" }))
+    {
+        @Html.HiddenFor(model => model.TypeCode)
+        <div class="body-content">
+            <div class="form-group">
+                <div class="col-xs-12">
+                    @Html.Label("Parent areas", new { @class = "page-header" })
+                </div>
+                <div class="col-xs-4">
+                    <strong title="The area which contains this type">Parent area</strong>
+                </div>
+                <div class="col-xs-4">
+                    <strong title="The areas contained by this type">Child area</strong>
+                </div>
+                <div class="col-xs-2">
+                    <strong title="Whether the child areas should completely cover the parent area with no gaps">Covers whole</strong>
+                </div>
+                <div class="col-xs-2">
+                    <strong title="Whether this is the default child type when aggregated metrics are calculated for the parent">Is primary</strong>
+                </div>
+                @for (var i = 0; i < Model.Relationships.Count; i++)
+                {
+                    if (Model.Relationships[i].ChildTypeCode != Model.TypeCode) { continue; }
+                    hasParents = true;
+                    <div class="col-xs-4">
+                        @Html.HiddenFor(x => x.Relationships[i].TypeCode)
+                        @Html.HiddenFor(x => x.Relationships[i].TypeLabel)
+                        @Html.DisplayFor(x => x.Relationships[i].TypeLabel)
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.HiddenFor(x => x.Relationships[i].ChildTypeCode)
+                        @Html.HiddenFor(x => x.Relationships[i].ChildTypeLabel)
+                        @Html.DisplayFor(x => x.Relationships[i].ChildTypeLabel)
+                    </div>
+                    <div class="col-xs-2">
+                        @Html.EditorFor(x => x.Relationships[i].CoversWhole)
+                    </div>
+                    <div class="col-xs-2">
+                        @Html.DisplayFor(x => x.Relationships[i].IsPrimary)
+                        @Html.HiddenFor(x => x.Relationships[i].IsPrimary)
+                    </div>
+                }
+                @if (!hasParents)
+                {
+                    <div class="col-xs-12">None</div>
+                }
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12">
+                    @Html.Label("Child areas", new { @class = "page-header" })
+                </div>
+                <div class="col-xs-4">
+                    <strong title="The area which contains this type">Parent area</strong>
+                </div>
+                <div class="col-xs-4">
+                    <strong title="The areas contained by this type">Child area</strong>
+                </div>
+                <div class="col-xs-2">
+                    <strong title="Whether the child areas should completely cover the parent area with no gaps">Covers whole</strong>
+                </div>
+                <div class="col-xs-2">
+                    <strong title="Whether this is the default child type when aggregated metrics are calculated for the parent">Is primary</strong>
+                </div>
+                @for (var i = 0; i < Model.Relationships.Count; i++)
+                {
+                    if (Model.Relationships[i].TypeCode != Model.TypeCode) { continue; }
+                    hasChildren = true;
+                    <div class="col-xs-4">
+                        @Html.HiddenFor(x => x.Relationships[i].TypeCode)
+                        @Html.HiddenFor(x => x.Relationships[i].TypeLabel)
+                        @Html.DisplayFor(x => x.Relationships[i].TypeLabel)
+                    </div>
+                    <div class="col-xs-4">
+                        @Html.HiddenFor(x => x.Relationships[i].ChildTypeCode)
+                        @Html.HiddenFor(x => x.Relationships[i].ChildTypeLabel)
+                        @Html.DisplayFor(x => x.Relationships[i].ChildTypeLabel)
+                    </div>
+                    <div class="col-xs-2">
+                        @Html.EditorFor(x => x.Relationships[i].CoversWhole)
+                    </div>
+                    <div class="col-xs-2" id="child-is-primary-div">
+                        <input type="radio" id="PrimaryChildTypeCode"
+                            @if (Model.Relationships[i].IsPrimary) { @Html.Raw("checked")  }
+                            name="PrimaryChildTypeCode" value="@Model.Relationships[i].ChildTypeCode" />
+                    </div>
+                }
+                @if (!hasChildren)
+                {
+                    <div class="col-xs-12">None</div>
+                }
+            </div>
+            @if (hasChildren || hasParents)
+            {
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-floppy-save"></span>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

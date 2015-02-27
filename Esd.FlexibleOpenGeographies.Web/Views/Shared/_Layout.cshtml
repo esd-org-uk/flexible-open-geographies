@@ -1,0 +1,157 @@
+﻿@using System.Configuration
+@using Esd.FlexibleOpenGeographies.SignIn.Principal
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Flexible Open Geographies</title>
+    @Styles.Render("~/Content/css")
+    @RenderSection("styles", false)
+    @RenderSection("headscripts", false)
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+    <body>
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/jqueryunobtrusiveajax")
+        @Scripts.Render("~/bundles/bootstrap")
+
+        <script>
+            var bootstrapButton = $.fn.button.noConflict(); // return $.fn.button to previously assigned value
+            $.fn.bootstrapBtn = bootstrapButton;
+            $.validator.setDefaults({
+                ignore: [],
+                // other default options
+            });
+
+            var querystring = [], hash;
+            var q = document.URL.split('?')[1];
+            if (q != undefined) {
+                q = q.split('&');
+                for (var i = 0; i < q.length; i++) {
+                    hash = q[i].split('=');
+                    querystring.push(hash[1]);
+                    querystring[hash[0]] = hash[1];
+                }
+            }
+        </script>
+
+        @RenderSection("scripts", false)
+        
+        <nav class="navbar-fixed-top nav navbar-default top-menu-nav" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav left-menu">
+                        <li>
+                            <a href="@Url.RouteUrl("Index")"><span class="glyphicon glyphicon-home"></span></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Area types <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="@Url.RouteUrl("SelectAreaType")">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                        Find
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.RouteUrl("AddAreaType")">
+                                        <span class="glyphicon glyphicon-plus-sign"></span>
+                                        Add
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Areas <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="@Url.RouteUrl("SelectArea")">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                        Find
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.RouteUrl("AddArea")">
+                                        <span class="glyphicon glyphicon-plus-sign"></span>
+                                        Add
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Metrics <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="@Url.RouteUrl("MetricsDownload")">
+                                        <span class="glyphicon glyphicon-export"></span>
+                                        Download
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@Url.RouteUrl("MetricsUpload")">
+                                        <span class="glyphicon glyphicon-import"></span>
+                                        Upload
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tools <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="@Url.RouteUrl("Data")">
+                                        <span class="glyphicon glyphicon-hdd"></span>
+                                        Data
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    @if (ConfigurationManager.AppSettings["HasSignIn"] == "true")
+                    {
+                        <ul class="navbar-nav right-menu">
+                            @{ var user = User as CustomPrincipal; }
+                            @if (user == null)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("SignIn")?returnUrl=@Html.Raw(HttpUtility.UrlEncode(HttpContext.Current.Request.Url.AbsoluteUri))">Sign in</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">@user.Name <span class="caret"></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a>@user.Name</a></li>
+                                        <li><a>@user.Email</a></li>
+                                        <li><a>@user.OrganisationName</a></li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <a href="@Url.RouteUrl("SignOut")?returnUrl=@Html.Raw(HttpUtility.UrlEncode(HttpContext.Current.Request.Url.AbsoluteUri))">Sign out</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </nav>
+        <div class="background">
+            <div class="container background-header-title">
+                <h1>Flexible open geographies</h1>
+                <h2>@ConfigurationManager.AppSettings["SubHeader"]</h2>
+            </div>
+        </div>
+        <div class="container body-content">
+            @RenderBody()
+        </div>
+        @if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["GoogleAnalyticsCode"]))
+        {
+            Html.RenderPartial("_GoogleAnalytics");
+        }
+    </body>
+</html>

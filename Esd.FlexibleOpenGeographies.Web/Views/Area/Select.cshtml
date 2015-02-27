@@ -1,0 +1,125 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.AreaSelectModel
+
+@{
+    ViewBag.Title = "View area";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript">
+        function AreaChanged() {
+            $('#show-map-warning').addClass('hide');
+            var areaId = $('#AreaId').val();
+            $('#tab-details').empty();
+            $('#tab-linked-areas').empty();
+            if (areaId != null && areaId != '') {
+                $.get('@Url.RouteUrl("AreaDetailsPartial")', { id: areaId }, function(data) {
+                    $('#tab-details').html(data);
+                });
+                if (($('#map-container:visible').length)) {
+                    MapUtility.showMap(areaId);
+                }
+                $.get('@Url.RouteUrl("AreaLinkedAreasPartial")', { id: areaId }, function(data) {
+                    $('#tab-linked-areas').html(data);
+                });
+                $.get('@Url.RouteUrl("AreaResourcesPartial")', { id: areaId }, function(data) {
+                    $('#tab-resources').html(data);
+                });
+            }
+        };
+
+        $(document).ready(function () {
+            MapUtility.warningDiv = $('#show-map-warning');
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                if (e.target.hash == '#tab-map') {
+                    MapUtility.showMap($('#AreaId').val());
+                }
+            });
+            var tab = querystring['tab'];
+            if (tab != null && tab != '') {
+                $('a[href="#' + tab + '"]').tab('show');
+            }
+        });
+
+        function hideSelectors() {
+            $('#show-button').removeClass('hide');
+            $('#area-selectors').addClass('hide');
+        };
+
+        function showSelectors() {
+            $('#show-button').addClass('hide');
+            $('#area-selectors').removeClass('hide');
+        };
+    </script>
+}
+@section styles
+{
+    @Styles.Render("~/OpenLayers3/ol.css")
+}
+@section headscripts
+{
+    @Scripts.Render("~/OpenLayers3/ol.js")
+    @Scripts.Render("~/Scripts/esd.maputility.js")
+}
+
+<div class="alert alert-info alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <span class="glyphicon glyphicon-info-sign"></span>
+    Select a type and an area to view details.
+    Only 1000 areas will be displayed in the dropdown at a time. Start typing the area name to filter the list to ensure your area appears.
+</div>
+
+<div class="page-header"><h2>View an area</h2></div>
+
+<div id="show-map-warning" class="alert alert-warning hide"></div>
+
+<div id="area-selectors">
+    <div class="col-xs-1">
+        <button id="hide-button" class="btn btn-sm btn-link" type="button" role="button" onclick="hideSelectors();" title="Hide dropdowns">
+            <span id="hide-icon" class="glyphicon glyphicon-resize-small"></span>
+        </button>
+    </div>
+    <div class="col-xs-4">
+        @Html.Partial("_AreaSelectDropdowns", Model)
+    </div>
+</div>
+<div class="col-xs-12">
+    <button id="show-button" class="btn btn-sm btn-link hide" type="button" role="button" onclick="showSelectors();" title="Show dropdowns">
+        <span id="show-icon" class="glyphicon glyphicon-resize-full"></span>
+    </button>
+    <ul class="nav nav-pills">
+        <li class="active">
+            <a id="tab-details-link" href="#tab-details" data-toggle="tab">
+                <span class="glyphicon glyphicon-list-alt"></span>
+                Details
+            </a>
+        </li>
+        <li>
+            <a id="tab-map-link" href="#tab-map" data-toggle="tab">
+                <span class="glyphicon glyphicon-globe"></span>
+                Map
+            </a>
+        </li>
+        <li>
+            <a id="tab-linked-areas-link" href="#tab-linked-areas" data-toggle="tab">
+                <span class="glyphicon glyphicon-link"></span>
+                Linked areas
+            </a>
+        </li>
+        <li>
+            <a id="tab-resources-link" href="#tab-resources" data-toggle="tab">
+                <span class="glyphicon glyphicon-book"></span>
+                Documents &amp; links
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="tab-details" class="tab-pane fade in active body-content"></div>
+        <div id="tab-map" class="tab-pane fade body-content">
+            @Html.Partial("_Map")
+        </div>
+        <div id="tab-linked-areas" class="tab-pane fade body-content"></div>
+        <div id="tab-resources" class="tab-pane fade body-content"></div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.AreaTypeResourcesModel
+
+<div id="resources-partial" class="form-horizontal">
+    @foreach (var resource in Model.Resources)
+    {
+        <div class="row">
+            <a href="@resource.Url">@resource.Label</a>
+            <button class="btn btn-link" onclick="$('#editResourceForm_@resource.AreaTypeResourceId').show();">[edit]</button>
+            @using (Ajax.BeginForm("DeleteResource", "AreaType", null, new AjaxOptions { HttpMethod = "Post", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "resources-partial" }, new { @style = "display:inline" }))
+            {
+                @Html.Hidden("typeCode", Model.TypeCode)
+                <input id="resourceId" name="resourceId" type="hidden" value="@resource.AreaTypeResourceId">
+                <button class="btn btn-sm btn-link" type="submit"><span class="glyphicon glyphicon-minus-sign icon-red"></span></button>
+            }
+            <div id="editResourceForm_@resource.AreaTypeResourceId" style="display:none">
+                @using (Ajax.BeginForm("EditResource", "AreaType", null, new AjaxOptions { HttpMethod = "Post", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "resources-partial" }, new { }))
+                {
+                    @Html.Hidden("typeCode", Model.TypeCode)
+                    <input id="AreaTypeResourceId" name="AreaTypeResourceId" type="hidden" value="@resource.AreaTypeResourceId">
+                    <input type="text" id="Label" name="Label" value="@resource.Label" />
+                    <input type="text" id="Url" name="Url" value="@resource.Url" />
+                    <button class="btn btn-link btn-sm" type="submit"><span class="glyphicon glyphicon-ok-sign icon-green"></span></button>
+                    <button class="btn btn-link btn-sm" type="reset" onclick="$('#editResourceForm_@resource.AreaTypeResourceId').hide();"><span class="glyphicon glyphicon-remove-sign icon-red"></span></button>
+                }
+            </div>
+        </div>
+    }
+
+    @if (Model.Editable)
+    {
+        <div class="row">
+            <button class="btn btn-link" onclick="$('#addResourceForm').show();">Add a document or link</button>
+        </div>
+
+        <div id="addResourceForm" style="display:none">
+            @using (Ajax.BeginForm("AddResource", "AreaType", null, new AjaxOptions { HttpMethod = "Post", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "resources-partial" }, new { }))
+            {
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(m => m.TypeCode)
+                <div>Document or link name</div>
+                <div><input type="text" id="Label" name="Label" /></div>
+                <div>Document or link URL</div>
+                <div><input type="text" id="Url" name="Url" /></div>
+                <div>
+                    <button class="btn btn-success btn-sm" type="submit">Create</button>
+                    <button class="btn btn-danger btn-sm" type="reset" onclick="$('#addResourceForm').hide();">Cancel</button>
+                </div>
+            }
+        </div>
+    }
+</div>

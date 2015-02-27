@@ -1,0 +1,291 @@
+﻿@using Esd.FlexibleOpenGeographies.Dtos
+@model Esd.FlexibleOpenGeographies.Web.Models.AreaEditChildrenModel
+
+@{
+    ViewBag.Title = "Edit children";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        var editChildren = {
+            index: 0,
+            typeCodes: [],
+            hasCurrent: function() {
+                return this.index < this.typeCodes.length;
+            },
+            hasNext: function() {
+                return this.index + 1 < this.typeCodes.length;
+            },
+            thisTypeCode: function() {
+                if (!this.hasCurrent()) return null;
+                return this.typeCodes[this.index];
+            }
+        };
+
+        function nextPage() {
+            highlightCurrentStage();
+            clearList();
+            editButtonLabel();
+            if (typeof filterBoundedType === 'function') filterBoundedType(editChildren.thisTypeCode());
+            if (editChildren.hasCurrent()) {
+                setInitialValues();
+                redrawMap();
+            }
+        };
+
+        function highlightCurrentStage() {
+            $('#edit-children-area-type').each(function() {
+                if ($(this).hasClass('stage-active')) $(this).removeClass('stage-active');
+                if (!$(this).hasClass('stage-inactive')) $(this).addClass('stage-inactive');
+            });
+            if (!editChildren.hasCurrent()) return;
+            var areaType = editChildren.thisTypeCode();
+            $('#edit-children-area-type[data-area-type-code="' + areaType + '"]').each(function() {
+                if ($(this).hasClass('stage-inactive')) $(this).removeClass('stage-inactive');
+                if (!$(this).hasClass('stage-active')) $(this).addClass('stage-active');
+            });
+        };
+
+        function redrawMap() {
+            var boundingType = $('#AreaCodeSelectTypeCode').val();
+            var boundingArea = $('#AreaCodeSelectAreaCode').val();
+            MapUtility.canSelect = true;
+            MapUtility.showMapForType(editChildren.thisTypeCode(), boundingType, boundingArea);
+            zoomToSelectedChildren();
+        };
+
+        function save() {
+            if (!editChildren.hasCurrent()) window.location.href = 'parents';
+            var areaType = editChildren.thisTypeCode();
+            var childAreas = MapUtility.selectedAreas;
+            $.ajax({
+                type: 'POST',
+                url: '@Url.RouteUrl("SaveAreaChildren")',
+                data: { areaId: @Model.Area.Id, areaType: areaType, childAreas: childAreas }
+            }).done((function() {
+                if (!editChildren.hasNext()) {
+                    window.location.href = 'parents';
+                } else {
+                    editChildren.index++;
+                    nextPage();
+                }
+            }));
+        };
+
+        function clearList() {
+            $('#selected-child-areas').empty();
+        };
+
+        function isChildAreaSelected(areaId) {
+            return $('#selected-child-area[data-area-id="' + areaId + '"]').length;
+        };
+
+        function addChildAreaToList(areaId) {
+            if (isChildAreaSelected(areaId)) return;
+            var label;
+            $.ajaxSetup({ async: false });
+            $.get('/areaLabel?id=' + areaId, function(data) {
+                label = data;
+            });
+            $.ajaxSetup({ async: true });
+            $('#selected-child-areas').append($('<div/>', {
+                'id': 'selected-child-area',
+                'data-area-id': areaId,
+                'text': label
+            }).append($('<button/>', {
+                'class': 'btn btn-sm btn-link',
+                'onclick': 'removeChildArea('+areaId+');'
+            }).append($('<span/>', {
+                'class': 'glyphicon glyphicon-minus-sign icon-red'
+            }))));
+        };
+
+        function removeChildArea(areaId) {
+            var areaType = editChildren.thisTypeCode();
+            removeChildAreaFromList(areaId);
+            var pos = $.inArray(areaId, MapUtility.selectedAreas);
+            if (pos > -1) {
+                MapUtility.selectedAreas.splice(pos, 1);
+                MapUtility.showMapForType(areaType);
+                zoomToSelectedChildren();
+            }
+        };
+
+        function addChildAreaFromCode() {
+            var areaId;
+            var areaType = editChildren.thisTypeCode();
+            var areaCode = $('#new-child-area-code').val();
+            $.ajaxSetup({ async: false });
+            $.getJSON('/areaId', { areaType: areaType, areaCode: areaCode }, function(data) {
+                areaId = data;
+            });
+            $.ajaxSetup({ async: true });
+            addChildArea(areaId, $('#add-by-code-error-message'));
+        };
+
+        function addChildAreaFromCombo() {
+            addChildArea($('#new-child-area-combo').val(), $('#add-by-combo-error-message'));
+        };
+
+        function addChildArea(areaId, errorDiv) {
+            areaId = parseInt(areaId);
+            if (areaId == null || areaId === 0 || areaId === '' || isNaN(areaId)) {
+                errorDiv.html('Unknown area');
+            } else if (isChildAreaSelected(areaId)) {
+                errorDiv.html('Already selected');
+            } else {
+                errorDiv.empty();
+                MapUtility.addAreaById(areaId);
+                MapUtility.selectedAreas.push(areaId);
+                zoomToSelectedChildren();
+            }
+        }
+
+        function removeChildAreaFromList(areaId) {
+            $('#selected-child-area[data-area-id="' + areaId + '"]').remove();
+            zoomToSelectedChildren();
+        };
+
+        function setInitialValues() {
+            if (!editChildren.hasCurrent()) return;
+            var areaType = editChildren.thisTypeCode();
+            var areaId = @Model.Area.Id;
+            MapUtility.selectedAreas = [];
+            $.ajaxSetup({ async: false });
+            $.getJSON('@Url.RouteUrl("ChildAreaIds")', { areaId: areaId, typeCode: areaType }, function(data) {
+                if (data != null && data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        MapUtility.selectedAreas.push(data[i]);
+                        addChildAreaToList(data[i]);
+                    }
+                }
+            });
+            $.ajaxSetup({ async: true });
+        };
+
+        function zoomToSelectedChildren() {
+            $.ajaxSetup({ async: false });
+            $.ajax({
+                url: '@Url.RouteUrl("BoundingBoxForAreas")',
+                data: { areaIds: MapUtility.selectedAreas },
+                traditional: true, //Otherwise the areaIds array is null
+                success: function(data) {
+                    if (data != null) {
+                        MapUtility.zoomToBounds(data);
+                    }
+                }
+            });
+            $.ajaxSetup({ async: true });
+        };
+
+        function editButtonLabel() {
+            var buttonText;
+            if (editChildren.hasNext()) {
+                buttonText = 'Save (next type)';
+            } else if (editChildren.hasCurrent()) {
+                buttonText = 'Save (edit parents)';
+            } else {
+                buttonText = 'Next (edit parents)';
+            }
+            $('#edit-children-save-button').html(buttonText);
+        };
+
+        function BoundingAreaChanged() {
+            redrawMap();
+        }
+    </script>
+}
+@section styles
+{
+    @Styles.Render("~/OpenLayers3/ol.css")
+}
+@section headscripts
+{
+    @Scripts.Render("~/OpenLayers3/ol.js")
+    @Scripts.Render("~/Scripts/esd.maputility.js")
+}
+
+<div class="alert alert-info alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <span class="glyphicon glyphicon-info-sign"></span>
+    Add child areas of the currently shown area type by clicking on the map,
+    by entering the code in the select tab, or by choosing from the dropdown in the select tab.
+    Enter a bounding area in the bounding tab to limit what is shown on the map.
+    When you have added all the child areas of the currently shown area type click Finish.
+    If there are more valid child area types the screen will move to the next one.
+    If there are not you will be taken to the edit parents screen.
+</div>
+
+@if (!Model.ChildTypes.Any())
+{
+    <div class="alert alert-warning alert-dismissable" role="alert">
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        There are no valid child types for areas of type <strong>@Model.Area.TypeName</strong> so no child areas can be added.
+    </div>
+}
+
+<div class="page-header"><h2>Child areas of @Model.Area.Label</h2></div>
+
+<div id="edit-children-type-list">
+    @foreach (var areaType in Model.ChildTypes)
+    {
+        <span id="edit-children-area-type" class="stages stage-inactive" data-area-type-code="@areaType.Code">@areaType.Label</span>
+    }
+</div>
+
+<div class="body-content container col-xs-12">
+    <div class="col-xs-4">
+        @if (Model.ChildTypes.Any())
+        {
+            <ul class="nav nav-tabs">
+                <li class="active"><a id="tab-areas-link" href="#tab-areas" data-toggle="tab">Areas</a></li>
+                <li><a id="tab-select-link" href="#tab-select" data-toggle="tab">Select</a></li>
+                <li><a id="tab-bounding-link" href="#tab-bounding" data-toggle="tab">Bounding</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="tab-bounding" class="tab-pane fade">@Html.Partial("_MapBoundedAreaSelect", Model)</div>
+                <div id="tab-select" class="tab-pane fade">
+                    <div class="help-block">Changes are not saved automatically. Must click save at the bottom of this column to save changes.</div>
+                    <div class="form-group row"><input id="new-child-area-code" type="text" class="form-control input-sm" placeholder="Area code" /></div>
+                    <div class="form-group row"><button class="btn btn-sm btn-success" type="button" onclick=" addChildAreaFromCode(); ">Add from code</button></div>
+                    <div id="add-by-code-error-message" class="field-validation-error"></div>
+                    <div class="form-group row">
+                        @Html.DropDownList("new-child-area-combo", new SelectList(new List<AreaBasic>(), "Id", "Label"), "-- select area --", new {@autocomplete = "off", @class = "form-control input-sm"})
+                    </div>
+                    <div class="form-group row">
+                        <button class="btn btn-sm btn-success" type="button" onclick=" addChildAreaFromCombo(); ">Add from List</button>
+                    </div>
+                    <div id="add-by-combo-error-message" class="field-validation-error"></div>
+                </div>
+                <div id="tab-areas" class="tab-pane fade in active"><div id="selected-child-areas"></div></div>
+            </div>
+        }
+        <div><button id="edit-children-save-button" class="btn btn-sm btn-success" onclick=" save(); " role="button">Save</button></div>
+    </div>
+    <div class="col-xs-8">@Html.Partial("_Map")</div>
+</div>
+
+<script type="text/javascript">
+    //Goes at end so _Map .ready runs first and sets up the geoserver stub
+    $(document).ready(function () {
+        $(window).on('areaadded', function(e) {
+            addChildAreaToList(e.areaId);
+        });
+        $(window).on('arearemoved', function (e) {
+            removeChildAreaFromList(e.areaId);
+        });
+        @foreach (var childType in Model.ChildTypes)
+        {
+            <text>@Html.Raw(string.Format("editChildren.typeCodes.push('{0}');", childType.Code))</text>
+        }
+        $("#new-child-area-combo").combobox({ "dataUri": getAreaTypeUrl });
+        nextPage();
+    });
+
+    function getAreaTypeUrl() {
+        var selectedType = editChildren.thisTypeCode();
+        return '@Url.RouteUrl("AreasForType")?typeCode=' + selectedType;
+    };
+</script>

@@ -1,0 +1,41 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.MetricUploadModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Upload metrics";
+}
+@section scripts
+{
+    @Scripts.Render("~/Scripts/jscolor.js")
+}
+
+<div class="page-header">
+    <h2>Upload metrics</h2>
+    <p>Provide the metrics you want to upload.</p>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.MessageText))
+{
+    <div class="alert alert-success">@Model.MessageText</div>
+}
+
+@using (Html.BeginForm("Upload", "Metric", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    <div>
+        <div class="form-group required">
+            <label class="col-xs-2 control-label" for="file">Metric upload file</label>
+            <div class="col-xs-4">
+                <input type="file" name="file" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-2 col-xs-10">
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-upload"></span>
+                    Upload
+                </button>
+                <small>Fields marked with * are required</small>
+            </div>
+        </div> 
+    </div>
+}

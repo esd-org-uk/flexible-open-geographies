@@ -1,0 +1,43 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.IAreaSelectDropdowns
+
+<script type="text/javascript">
+    function AreaSelectAreaTypeChanged() {
+        $('#AreaId').append($('<option/>', { value: '', text: '-- select area --' }));
+        $('#AreaId').val('');
+        var areaType = $('#TypeCode').val();
+        if (typeof filterBoundedType === 'function') filterBoundedType(areaType);
+    };
+
+    $(document).ready(function () {
+        $("#AreaId").combobox({
+            "dataUri": getAreaTypeUrl,
+            "onchange": tryAreaChanged
+        });
+        var areaId = $('#AreaId').val();
+        var typeCode = $('#TypeCode').val();
+        if (areaId != null && areaId != '') {
+            tryAreaChanged();
+        }
+        if (typeCode != null && typeCode != '') {
+            if (typeof filterBoundedType === 'function') filterBoundedType(typeCode);
+        }
+    });
+
+    function getAreaTypeUrl() {
+        var selectedType = $('#TypeCode').val();
+        return '@Url.RouteUrl("AreasForType")?typeCode=' + selectedType;
+    };
+
+    function tryAreaChanged() {
+        if (typeof AreaChanged === 'function') {
+            AreaChanged();
+        }
+    };
+</script>
+
+<div class="form-group row">
+    @Html.DropDownListFor(m => m.TypeCode, new SelectList(Model.AreaTypes, "Code", "Label"), "-- select area type --", new { @onchange = "AreaSelectAreaTypeChanged();", @class = "form-control input-sm" })
+</div>
+<div class="form-group row">
+    @Html.DropDownListFor(m => m.AreaId, new SelectList(Model.Areas, "Id", "Label"), "-- select area --", new { @onchange = "tryAreaChanged();", @autocomplete = "off", @class = "form-control input-sm" })
+</div>

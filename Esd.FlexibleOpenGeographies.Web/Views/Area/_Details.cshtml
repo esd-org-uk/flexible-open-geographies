@@ -1,0 +1,70 @@
+﻿@using System.Globalization
+@model Esd.FlexibleOpenGeographies.Web.Models.AreaDetailsModel
+
+<div class="form-horizontal">
+    <div class="form-group row">
+        @Html.LabelFor(m => m.AreaType, new { @class = "col-xs-3" })
+        @Html.Partial("_AreaTypeLink", Model.AreaType)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.Code, new { @class = "col-xs-3" })
+        @Html.DisplayFor(m => m.Code)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.Label, new { @class = "col-xs-3" })
+        @Html.DisplayFor(m => m.Label)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.AlternateLabels, new { @class = "col-xs-3" })
+        @if (Model.AlternateLabels != null && Model.AlternateLabels.Any()) { 
+            @Html.DisplayFor(m => m.AlternateLabels[0])
+        }
+    </div>
+    @if (Model.AlternateLabels != null && Model.AlternateLabels.Count > 1)
+    {
+        for (var index = 1; index < Model.AlternateLabels.Count; index++)
+        {
+            <div class="form-group row">
+                <span class="col-xs-offset-3"></span>
+                @Html.DisplayFor(m => m.AlternateLabels[index])
+            </div>
+        }
+    }
+    <div class="form-group row">
+        @Html.LabelFor(m => m.Colour, new { @class = "col-xs-3" })
+        @Html.DisplayFor(m => m.Colour, new { style = string.Format("backround-color: {0};", Model.Colour) })
+        @Html.HiddenFor(m => m.Colour)
+        @if (!string.IsNullOrWhiteSpace(Model.Colour))
+        {
+            <div class="colour-box" style="background-color: #@(Model.Colour)"></div>
+        }
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.SameAsLink, new { @class = "col-xs-3" })
+        @Html.DisplayFor(m => m.SameAsLink)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.URILink, new { @class = "col-xs-3" })
+        @Html.DisplayFor(m => m.URILink)
+    </div>
+    <div class="form-group row">
+        <label class="col-xs-3">Download as</label>
+        <a href="@Model.Id/json">JSON</a> | <a href="@Model.Id/xml">XML</a> | <a href="@Model.Id/kml">KML</a>
+    </div>
+
+    <div class="form-group row">
+        <small class="col-xs-offset-3">Created by @Html.DisplayFor(m => m.CreatorDescription) on @Model.CreateDate.ToString("g", new CultureInfo("en-GB"))</small>
+    </div>
+    @if (Model.UpdateDate.HasValue)
+    {
+        <div class="form-group row">
+            <small class="col-xs-offset-3">Last updated on @Model.UpdateDate.Value.ToString("g", new CultureInfo("en-GB"))</small>
+        </div>
+    }
+    @if (Model.Editable)
+    {
+        <div class="form-group row">
+            <small class="col-xs-offset-3"><a href="@Url.RouteUrl("EditArea", new { id = Model.Id })">Edit</a></small>
+        </div>
+    }
+</div>

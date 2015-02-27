@@ -1,0 +1,138 @@
+﻿@using System.Globalization
+@model Esd.FlexibleOpenGeographies.Web.Models.AreaTypeDetailsModel
+
+<div class="form-horizontal">
+    <div class="form-group row">
+        @Html.LabelFor(m => m.IsGroup, new { @class = "col-xs-4" })
+        @Html.DisplayFor(m => m.IsGroup)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.Code, new { @class = "col-xs-4" })
+        @Html.DisplayFor(m => m.Code)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.Label, new { @class = "col-xs-4" })
+        @Html.DisplayFor(m => m.Label)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.AlternateLabels, new { @class = "col-xs-4" })
+        @if (Model.AlternateLabels != null && Model.AlternateLabels.Any())
+        {
+            @Html.DisplayFor(m => m.AlternateLabels[0])
+        }
+    </div>
+    @if (Model.AlternateLabels != null && Model.AlternateLabels.Count > 1)
+    {
+        for (var index = 1; index < Model.AlternateLabels.Count; index++)
+        {
+            <div class="form-group row">
+                <span class="col-xs-offset-4"></span>
+                @Html.DisplayFor(m => m.AlternateLabels[index])
+            </div>
+        }
+    }
+    <div class="form-group row">
+        @Html.LabelFor(m => m.MetricUploadPermissionLevelDescription, new { @class = "col-xs-4" })
+        @Html.DisplayFor(m => m.MetricUploadPermissionLevelDescription)
+    </div>
+    
+    @if (Model.IsGroup)
+    {
+        <div class="form-group row">
+            @Html.LabelFor(m => m.GroupMembers, new { @class = "col-xs-4" })
+            @if (Model.GroupMembers != null && Model.GroupMembers.Any())
+            {
+                @Html.Partial("_AreaTypeLink", Model.GroupMembers[0])
+            }
+        </div>
+        if (Model.GroupMembers != null && Model.GroupMembers.Count > 1)
+        {
+            for (var index = 1; index < Model.GroupMembers.Count; index++)
+            {
+                <div class="form-group row">
+                    <span class="col-xs-offset-4"></span>
+                    @Html.Partial("_AreaTypeLink", Model.GroupMembers[index])
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <div class="form-group row">
+            @Html.LabelFor(m => m.ParentTypes, new {@class = "col-xs-4"})
+            @if (Model.ParentTypes != null && Model.ParentTypes.Any())
+            {
+                @Html.Partial("_AreaTypeLink", Model.ParentTypes[0])
+            }
+        </div>
+        if (Model.ParentTypes != null && Model.ParentTypes.Count > 1)
+        {
+            for (var index = 1; index < Model.ParentTypes.Count; index++)
+            {
+                <div class="form-group row">
+                    <span class="col-xs-offset-4"></span>
+                    @Html.Partial("_AreaTypeLink", Model.ParentTypes[index])
+                </div>
+            }
+        }
+        
+        <div class="form-group row">
+            @Html.LabelFor(m => m.ChildTypes, new {@class = "col-xs-4"})
+            @if (Model.ChildTypes != null && Model.ChildTypes.Any())
+            {
+                @Html.Partial("_AreaTypeLink", Model.ChildTypes[0])
+            }
+        </div>
+        if (Model.ChildTypes != null && Model.ChildTypes.Count > 1)
+        {
+            for (var index = 1; index < Model.ChildTypes.Count; index++)
+            {
+                <div class="form-group row">
+                    <span class="col-xs-offset-4"></span>
+                    @Html.Partial("_AreaTypeLink", Model.ChildTypes[index])
+                </div>
+            }
+        }
+        <div class="form-group row">
+            @Html.LabelFor(m => m.PrimaryChildType, new { @class = "col-xs-4" })
+            @if (Model.PrimaryChildType != null) { 
+                @Html.Partial("_AreaTypeLink", Model.PrimaryChildType)
+            }
+        </div>
+    }
+
+    <div class="form-group row">
+        @Html.LabelFor(m => m.SameAsLink, new { @class = "col-xs-4" })
+        @Html.DisplayFor(m => m.SameAsLink)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(m => m.URILink, new { @class = "col-xs-4" })
+        @Html.DisplayFor(m => m.URILink)
+    </div>
+    <div class="form-group row">
+        <label class="col-xs-4">Download as</label>
+        <a href="@Model.Code/json">JSON</a> | <a href="@Model.Code/xml">XML</a>
+    </div>
+
+    <div class="form-group row">
+        <small class="col-xs-offset-4">Created by @Html.DisplayFor(m => m.CreatorDescription) on @Model.CreateDate.ToString("g", new CultureInfo("en-GB"))</small>
+    </div>
+    @if (Model.UpdateDate.HasValue)
+    {
+        <div class="form-group row">
+            <small class="col-xs-offset-4">Last updated on @Model.UpdateDate.Value.ToString("g", new CultureInfo("en-GB"))</small>
+        </div>
+    }
+    @if (Model.Editable)
+    {
+        <div class="form-group row">
+            <small class="col-xs-offset-4">
+                <a href="@Url.RouteUrl("EditAreaType", new { code = Model.Code })">Edit</a>
+                @if ((Model.ChildTypes != null && Model.ChildTypes.Any()) || (Model.ParentTypes != null && Model.ParentTypes.Any()))
+                {
+                    <text>|</text> <a href="@Url.RouteUrl("EditAreaTypeRelationship", new { code = Model.Code })">Edit relationships</a>
+                }
+            </small>
+        </div>
+    }
+</div>

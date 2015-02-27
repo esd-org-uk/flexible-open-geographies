@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Example map</title>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+    <h1>Hot and cold population map of the Devon districts</h1>
+    <div id="map_canvas" style="display: block; height: 800px; width:100%"></div>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script>
+        var colorValues = ["#0000FF", "#6699FF", "#FF8080", "#FF0000"];
+
+        var hotAndCold = new Array();
+        var arr = new Array();
+        var initialized = false;
+
+        // Set basic map attributes
+        var mapOptions = {
+            zoom: 9,
+            center: new google.maps.LatLng(50.7, -3.8)
+        };
+
+        var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+        map.data.setStyle(function (feature) {
+            initialize();
+            return {
+                fillColor: hotAndCold[feature.getProperty('name')],
+                strokeWeight: 1
+            };
+        });
+
+        map.data.addListener('addfeature', function (e) {
+            var bounds = new google.maps.LatLngBounds();
+
+            if (e.feature.getGeometry().getType() == 'MultiPolygon') {
+                e.feature.getGeometry().getArray().forEach(function (polygon) {
+                    bounds = getBoundsFromPolygon(polygon, bounds);
+                });
+            }
+            else {
+                bounds = getBoundsFromPolygon(e.feature.getGeometry(), bounds);
+            }
+
+            var infowindow = new google.maps.InfoWindow({
+                content: e.feature.getProperty('name'),
+                position: bounds.getCenter()
+            });
+
+            infowindow.open(map);
+        });
+
+        function getBoundsFromPolygon(polygon, bounds)
+        {
+            polygon.getArray().forEach(function (path) {
+                path.getArray().forEach(function (latLng) {
+                    bounds.extend(latLng);
+                });
+            });
+
+            return bounds;
+        }
+
+        $.getJSON("http://api.beta.fog.esd.org.uk/data?metricType=1&period=cal_2013&area=E92000001&areaType=Country&byType=District&callback=?", function (data) {
+            $.each(data.rows, function (key, val) {
+                arr.push({ name: val.area.label, val: parseFloat(val.values[0].value) });
+ 
+                $.getJSON("http://api.beta.fog.esd.org.uk/shape?code=" + val.area.identifier + "&type=District&callback=?", function (geoJSON) {
+                    map.data.addGeoJson(geoJSON);
+                });
+            });
+        });
+
+        function initialize() {
+            if (initialized)
+            {
+                return;
+            }
+
+            initialized = true;
+
+            arr.sort(function (a, b) { return a.val - b.val });
+            var min = arr[0].val;
+            var quarter = ((arr[arr.length - 1].val - min) / 4);
+
+            for (var i = 0; i < arr.length; i++) {
+                if (arr[i].val <= quarter + min) {
+                    hotAndCold[arr[i].name] = colorValues[0];
+                }
+                else if (arr[i].val <= (quarter * 2) + min) {
+                    hotAndCold[arr[i].name] = colorValues[1];
+                }
+                else if (arr[i].val <= (quarter * 3) + min) {
+                    hotAndCold[arr[i].name] = colorValues[2];
+                }
+                else if (arr[i].val <= (quarter * 4) + min) {
+                    hotAndCold[arr[i].name] = colorValues[3];
+                }
+            }
+        }
+    </script>
+</body>
+</html>

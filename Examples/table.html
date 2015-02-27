@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Example table</title>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+    <h1>Example table for districts in Devon</h1>
+    <table id="tbData" cellpadding="10"></table>
+    <script>
+        var results = [];
+        $.getJSON("http://api.beta.fog.esd.org.uk/data?metricType=1,280&period=cal_2013,fin_2014_15&area=E92000001&areaType=Country&byType=District&callback=?", function (data) {
+            var html = '<tr><th></th>';
+            $.each(data.columns, function (key, val) {
+                html += '<th>' + val.metricType.label + '<br/>' + val.period.label + '</th>';
+            });
+
+            html += '</tr>';
+
+            $.each(data.rows, function (key, val) {
+                html += '<tr><td>' + val.area.label + '</td>';                
+                for (var i = 0; i < val.values.length; i++) {
+                    if (val.values[i] == null)
+                    {
+                        html += '<td>-</td>';
+                        continue;
+                    }
+                    html += '<td>' + val.values[i].value + '</td>';
+                }
+                html += '</tr>';
+            });
+
+            $('#tbData').append(html);
+        });        
+    </script>
+</body>
+</html>

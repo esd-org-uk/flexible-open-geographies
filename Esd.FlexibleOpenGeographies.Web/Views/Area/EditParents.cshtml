@@ -1,0 +1,81 @@
+﻿@using Esd.FlexibleOpenGeographies.Dtos
+@model Esd.FlexibleOpenGeographies.Web.Models.AreaEditParentsModel
+
+@{
+    ViewBag.Title = "Edit parents";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.get('@Url.RouteUrl("AreaParentsPartial", new { id = Model.Area.Id })', function(data) {
+                $('#parents-partial').html(data);
+            });
+        });
+    </script>
+}
+
+<div class="alert alert-info alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <span class="glyphicon glyphicon-info-sign"></span>
+    Add parent areas of the currently shown area type from the dropdowns.
+    Although there will usually only be a single parent per area type you can enter multiple (or none) if required.
+    Click <em>Suggest</em> to show the likely parent areas based on geography.
+    Click <span class="glyphicon glyphicon-ok-sign icon-green"></span> to add a parent area.
+    Click <span class="glyphicon glyphicon-minus-sign icon-red"></span> to remove a parent area.
+</div>
+
+<div class="page-header"><h2>Parent areas of @Model.Area.Label</h2></div>
+
+<div class="body-content">
+
+    @if (!Model.ParentTypes.Any())
+    {
+        <div class="alert alert-warning" role="alert">
+            <span class="glyphicon glyphicon-warning-sign"></span>
+            Areas of type @Model.Area.TypeName do not have any valid parent area types.
+        </div>
+    }
+    else
+    {
+        <h4>Add new parent areas</h4>
+        foreach (var areaType in Model.ParentTypes)
+        {
+            var dataUriFunction = "getAreaTypeUrl" + areaType.Code;
+            <script type="text/javascript">
+                $(document).ready(function() {
+                    $("#ParentAreaId[dataAreaType='@areaType.Code']").combobox({ "dataUri": @dataUriFunction });
+                });
+
+                function @dataUriFunction () {
+                    return '@Url.RouteUrl("AreasForType")?typeCode=@areaType.Code';
+                };
+            </script>
+            using (Ajax.BeginForm("AddParent", "Area", null, new AjaxOptions { HttpMethod = "Post", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "existing-parents-container" }, new { }))
+            {
+                @Html.Hidden("ChildAreaId", Model.Area.Id)
+                <div class="form-group row">
+                    <label class="col-xs-2">@areaType.Label</label>
+                    @Html.DropDownList("ParentAreaId", new SelectList(new List<AreaBasicWithType>(), "Id", "Label"), "-- select parent --", new {@autocomplete = "off", @class = "form-control input-sm", @dataAreaType = areaType.Code})
+                    <button class="btn btn-link btn-sm left-padded-30" type="submit"><span class="glyphicon glyphicon-ok-sign icon-green"></span></button>
+                </div>
+            }
+        }
+        <hr/>
+        <div id="parent-suggestions">
+            @using (Ajax.BeginForm("SuggestParents", "Area", null, new AjaxOptions { HttpMethod = "Post", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "parent-suggestions" }, new { }))
+            {
+                @Html.Hidden("areaId", Model.Area.Id)
+                <button class="btn btn-primary btn-sm" type="submit">Suggest</button>
+                <div class="help-block">Calculate likely parents based on geographical positions. This may take some time.</div>
+            }
+        </div>
+        <hr/>
+    }
+
+    <div id="parents-partial"></div>
+    <hr/>
+    <a href="@Url.RouteUrl("SelectArea", new { areaId = Model.Area.Id })" class="btn btn-primary" role="button">Finished</a>
+</div>

@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Example chart</title>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>   
+    <script>
+        google.load("visualization", "1", { packages: ["corechart"] });
+        google.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.getJSON("http://api.beta.fog.esd.org.uk/data?metricType=1&period=cal_2013&area=E92000001&areaType=Country&byType=District&callback=?", function (data) {
+
+
+                var arr = new Array();
+                arr.push(new Array("Area", "Population"));
+
+                $.each(data.rows, function (key, val) {
+                    arr.push(new Array(val.area.label, parseFloat(val.values[0].value)));
+                });
+
+                var table = google.visualization.arrayToDataTable(arr);
+
+                var options = {
+                    title: data.columns[0].metricType.label + ' - ' + data.columns[0].period.label
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+                chart.draw(table, options);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Devon population by district</h1>    
+    <div id="piechart" style="width: 900px; height: 500px;"></div>
+</body>
+</html>

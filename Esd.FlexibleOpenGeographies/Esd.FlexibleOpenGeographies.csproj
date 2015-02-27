@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B09F350F-651C-47BF-8D88-4CE33995F8B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Esd.FlexibleOpenGeographies</RootNamespace>
+    <AssemblyName>Esd.FlexibleOpenGeographies</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>..\packages\Npgsql.2.2.1\lib\net45\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MySql.Data.6.9.3\lib\net45\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MySql.Data.Entity.6.9.3\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\packages\Npgsql.2.2.1\lib\net45\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Comparers\AreaBasicWithTypeIdComparer.cs" />
+    <Compile Include="Comparers\AreaTypeBasicCodeComparer.cs" />
+    <Compile Include="ContextFactory.cs" />
+    <Compile Include="Dtos\AreaBasic.cs" />
+    <Compile Include="Dtos\AreaBasicWithType.cs" />
+    <Compile Include="Dtos\AreaDetailsNoGeography.cs" />
+    <Compile Include="Dtos\AreaForCalcuatedGeometry.cs" />
+    <Compile Include="Dtos\AreaNoGeographyOrOwnership.cs" />
+    <Compile Include="Dtos\AreaResource.cs" />
+    <Compile Include="Dtos\AreaTypeDetails.cs" />
+    <Compile Include="Dtos\AreaTypeEditableDetails.cs" />
+    <Compile Include="Dtos\AreaTypeMetricUploadPermissionLevel.cs" />
+    <Compile Include="Dtos\AreaTypeResource.cs" />
+    <Compile Include="Dtos\BoundingBox.cs" />
+    <Compile Include="Dtos\IHasOwner.cs" />
+    <Compile Include="Dtos\MetricAggregationBasic.cs" />
+    <Compile Include="Dtos\OrganisationBasic.cs" />
+    <Compile Include="Dtos\PeriodBasic.cs" />
+    <Compile Include="Dtos\MetricTypeBasic.cs" />
+    <Compile Include="Dtos\AreaTypeBasic.cs" />
+    <Compile Include="Dtos\AreaStatus.cs" />
+    <Compile Include="Dtos\AreaTypeWithParentAndAlternateLabels.cs" />
+    <Compile Include="Dtos\AreaFull.cs" />
+    <Compile Include="Dtos\TypeHierarchyBasic.cs" />
+    <Compile Include="Dtos\TypeHierarchyWithLabels.cs" />
+    <Compile Include="Dtos\UploadBasic.cs" />
+    <Compile Include="Dtos\MetricBasic.cs" />
+    <Compile Include="Dtos\UserBasic.cs" />
+    <Compile Include="FragmentExtractorFactory.cs" />
+    <Compile Include="GeoContentType.cs" />
+    <Compile Include="GeoContentTypeDetector.cs" />
+    <Compile Include="GeoJsonFragmentExtractor.cs" />
+    <Compile Include="IContextFactory.cs" />
+    <Compile Include="IFragmentExtractorFactory.cs" />
+    <Compile Include="IGeoContentTypeDetector.cs" />
+    <Compile Include="IKmlReader.cs" />
+    <Compile Include="IFragmentExtractor.cs" />
+    <Compile Include="IQueryEnumerable.cs" />
+    <Compile Include="IQueryFactory.cs" />
+    <Compile Include="IQuerySingle.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="IUnitOfWorkFactory.cs" />
+    <Compile Include="IUnitOfWorkWithResult.cs" />
+    <Compile Include="KmlReader.cs" />
+    <Compile Include="Mappers\AreaMapper.cs" />
+    <Compile Include="Mappers\MetricAggregationMapper.cs" />
+    <Compile Include="Mappers\MetricUploadPermissionMapper.cs" />
+    <Compile Include="Mappers\OrganisationMapper.cs" />
+    <Compile Include="Mappers\TypeHierarchyMapper.cs" />
+    <Compile Include="Mappers\AreaTypeMapper.cs" />
+    <Compile Include="Mappers\PeriodMapper.cs" />
+    <Compile Include="Mappers\MetricTypeMapper.cs" />
+    <Compile Include="Mappers\UploadMapper.cs" />
+    <Compile Include="Mappers\MetricMapper.cs" />
+    <Compile Include="Mappers\UserMapper.cs" />
+    <Compile Include="KmlFragmentExtractor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\AllMetricUploadPermissionLevels.cs" />
+    <Compile Include="Queries\AncestorTypesForAreaType.cs" />
+    <Compile Include="Queries\AreaBasicForCoordinates.cs" />
+    <Compile Include="Queries\AreaBasicWithTypeForTypeAndCode.cs" />
+    <Compile Include="Queries\AreaByIdOrCode.cs" />
+    <Compile Include="Queries\AreaDetailsByBoundingGroup.cs" />
+    <Compile Include="Queries\AreaDetailsByTypeAndCode.cs" />
+    <Compile Include="Queries\AreaIdForTypeAndCode.cs" />
+    <Compile Include="Queries\AreaIdsForTypeAndAncestor.cs" />
+    <Compile Include="Queries\AreaIdsForTypeAndBox.cs" />
+    <Compile Include="Queries\BoundingBoxForArea.cs" />
+    <Compile Include="Queries\BoundingBoxForAreas.cs" />
+    <Compile Include="Queries\BoundingBoxForType.cs" />
+    <Compile Include="Queries\ChildAreaIdsForAreaAndAreaType.cs" />
+    <Compile Include="Queries\ChildTypeCodesForAreaType.cs" />
+    <Compile Include="Queries\AreaBasicForTypeAndCoordinates.cs" />
+    <Compile Include="Queries\AreasForCalculatedGeometry.cs" />
+    <Compile Include="Queries\ChildAreasForAreasAndAreaType.cs" />
+    <Compile Include="Queries\FilterAreaIdsByAncestor.cs" />
+    <Compile Include="Queries\FilterAreaIdsByAreaType.cs" />
+    <Compile Include="Queries\GeoJsonForArea.cs" />
+    <Compile Include="Queries\TypeCodesForAreaTypeGroup.cs" />
+    <Compile Include="Queries\HierarchicalAreaByIdAndType.cs" />
+    <Compile Include="Queries\KmlForTypeAndCode.cs" />
+    <Compile Include="Queries\LabelForAreaId.cs" />
+    <Compile Include="Queries\MetricDownloadWithArea.cs" />
+    <Compile Include="Queries\ParentAreaBasicWithTypeForId.cs" />
+    <Compile Include="Queries\ParentAreaTypesForType.cs" />
+    <Compile Include="Queries\ResourcesForArea.cs" />
+    <Compile Include="Queries\ResourcesForAreaType.cs" />
+    <Compile Include="Queries\SuggestedParentAreaBasicWithTypeForId.cs" />
+    <Compile Include="Queries\TypeHierarchiesForAreaType.cs" />
+    <Compile Include="Queries\AreaBasicForTypeAndTerm.cs" />
+    <Compile Include="Queries\AreaBasicForType.cs" />
+    <Compile Include="Queries\AreaBasicWithTypeForType.cs" />
+    <Compile Include="Queries\AreasForUser.cs" />
+    <Compile Include="Queries\AreaTypeCodeForLabel.cs" />
+    <Compile Include="Queries\AreaTypeDetailsByCode.cs" />
+    <Compile Include="Queries\AreaTypesByTypes.cs" />
+    <Compile Include="Queries\AllAreasWithGeometry.cs" />
+    <Compile Include="Queries\AllAreasWithKml.cs" />
+    <Compile Include="Queries\MetricAggregationByAreaTypeAndMetricType.cs" />
+    <Compile Include="Queries\TypeHierarchiesWithLabelsForType.cs" />
+    <Compile Include="Queries\UserByUniqueId.cs" />
+    <Compile Include="Queries\AreaTypesForUser.cs" />
+    <Compile Include="Queries\CanBeEdited.cs" />
+    <Compile Include="Queries\AreaBasicWithTypeForId.cs" />
+    <Compile Include="Queries\ChildAreasForAreaAndAreaType.cs" />
+    <Compile Include="Queries\ColourForId.cs" />
+    <Compile Include="Queries\HierarchicalAreaTypesByAreaCode.cs" />
+    <Compile Include="Queries\MetricTypeIdsWithData.cs" />
+    <Compile Include="Queries\MetricTypesBasic.cs" />
+    <Compile Include="Queries\MetricDownload.cs" />
+    <Compile Include="Queries\MetricTypesBasicByTerm.cs" />
+    <Compile Include="Queries\PeriodIdsWithData.cs" />
+    <Compile Include="Queries\MetricUploadPermissionLevelDescriptionById.cs" />
+    <Compile Include="Queries\PeriodByMetricType.cs" />
+    <Compile Include="Queries\ChildAreasForArea.cs" />
+    <Compile Include="Queries\FilteredAreaBasicForType.cs" />
+    <Compile Include="Queries\ParentAreasForArea.cs" />
+    <Compile Include="Queries\PeriodByCode.cs" />
+    <Compile Include="Queries\AreaDetailsById.cs" />
+    <Compile Include="Queries\MetricTypesBasicByCode.cs" />
+    <Compile Include="Queries\ShortCodeForTypeCode.cs" />
+    <Compile Include="Queries\UploadBasicSingle.cs" />
+    <Compile Include="Queries\AreaTypesBasic.cs" />
+    <Compile Include="Queries\KmlForId.cs" />
+    <Compile Include="Queries\NonEmptyAreaTypesBasic.cs" />
+    <Compile Include="Queries\AllAreasWithNoKml.cs" />
+    <Compile Include="Queries\ValidateAreaCode.cs" />
+    <Compile Include="Queries\ValidateTypeCode.cs" />
+    <Compile Include="QueryFactory.cs" />
+    <Compile Include="UnitOfWorkFactory.cs" />
+    <Compile Include="UnitsOfWork\AddAreaComposition.cs" />
+    <Compile Include="UnitsOfWork\AddAreaResource.cs" />
+    <Compile Include="UnitsOfWork\AddAreaTypeResource.cs" />
+    <Compile Include="UnitsOfWork\DeleteAreaComposition.cs" />
+    <Compile Include="UnitsOfWork\DeleteAreaResource.cs" />
+    <Compile Include="UnitsOfWork\DeleteAreaTypeResource.cs" />
+    <Compile Include="UnitsOfWork\EditAreaResource.cs" />
+    <Compile Include="UnitsOfWork\EditAreaTypeResource.cs" />
+    <Compile Include="UnitsOfWork\ReplaceChildAreasForAreaAndType.cs" />
+    <Compile Include="UnitsOfWork\SetGeometryCalculationResult.cs" />
+    <Compile Include="UnitsOfWork\UpdateAreaTypeRelationship.cs" />
+    <Compile Include="UnitsOfWork\UpsertCalculatedGeometry.cs" />
+    <Compile Include="UnitsOfWork\UpsertOrganisation.cs" />
+    <Compile Include="UnitsOfWork\UpsertUser.cs" />
+    <Compile Include="UnitsOfWork\UpsertGeometry.cs" />
+    <Compile Include="UnitsOfWork\RemoveMetric.cs" />
+    <Compile Include="UnitsOfWork\RemoveUpload.cs" />
+    <Compile Include="UnitsOfWork\AddUpload.cs" />
+    <Compile Include="UnitsOfWork\AddMetric.cs" />
+    <Compile Include="UnitsOfWork\AddArea.cs" />
+    <Compile Include="UnitsOfWork\AddAreaType.cs" />
+    <Compile Include="UnitsOfWork\ReserveCode.cs" />
+    <Compile Include="UnitsOfWork\ReserveTypeCode.cs" />
+    <Compile Include="UnitsOfWork\UpdateArea.cs" />
+    <Compile Include="UnitsOfWork\UpdateAreaType.cs" />
+    <Compile Include="UnitsOfWork\UpdateKml.cs" />
+    <Compile Include="Utilities\UriCreator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Esd.FlexibleOpenGeographies.Data\Esd.FlexibleOpenGeographies.Data.csproj">
+      <Project>{7f0c5c5e-0649-42e3-b86d-1223a50185be}</Project>
+      <Name>Esd.FlexibleOpenGeographies.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

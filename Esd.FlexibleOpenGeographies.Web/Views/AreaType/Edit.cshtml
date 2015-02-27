@@ -1,0 +1,206 @@
+﻿@using System.Configuration
+@model Esd.FlexibleOpenGeographies.Web.Models.AreaTypeEditModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Edit area type";
+    var permissionClass = "";
+    if (ConfigurationManager.AppSettings["DisablePermissions"] == "true")
+    {
+        permissionClass = "hide";
+    }
+}
+@section scripts
+{
+    <script type="text/javascript">
+        var alternateLabelIndex = @(Model.AlternateLabels.Any() ? Model.AlternateLabels.Count - 1 : 0);
+        function AddAlternateLabel() {
+            var value = $('#AlternateLabels_0_').val();
+            if (value == null || value == '') return;
+            alternateLabelIndex++;
+            var inputControl = $('<input/>', {
+                'id': 'AlternateLabels_' + alternateLabelIndex.toString() + '_',
+                'name': 'AlternateLabels[' + alternateLabelIndex.toString() + ']',
+                'class': 'form-control input-sm',
+                'type': 'text',
+                'value': value
+            });
+            var removeButton = $('<button/>', {
+                'class': 'btn btn-sm btn-link',
+                'type': 'button',
+                'onclick': 'RemoveAlternateLabel(' + alternateLabelIndex.toString() + ')'
+            }).append($('<span/>', {
+                'class': 'glyphicon glyphicon-minus-sign icon-red',
+                'title': 'Remove'
+            }));
+            var html = $('<div/>', {
+                'class': 'form-group',
+                'id': 'alternate-label-group-' + alternateLabelIndex.toString()
+            }).append($('<div/>', {
+                    'class': 'col-xs-offset-3 col-xs-3'
+                }).append(inputControl)
+            ).append($('<div/>', {
+                    'class': 'col-xs-1'
+                }).append(removeButton)
+            ).append($('<div/>', {
+                'class': 'col-xs-5'
+            }));
+            $('#alternate-labels-group').append(html);
+            $('#AlternateLabels_0_').val('');
+        };
+
+        function RemoveAlternateLabel(index) {
+            var input = $('#AlternateLabels_' + index.toString() + '_');
+            var group = $('#alternate-label-group-' + index.toString());
+            input.val('');
+            group.hide();
+        };
+    </script>
+}
+
+<div class="alert alert-info alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <p>
+        <span class="glyphicon glyphicon-info-sign"></span> Edit an existing area type.
+        If you change the parents or children this will not affect any existing areas and you may also need to edit their relationships.
+    </p>
+</div>
+
+<div class="page-header"><h2>Edit an existing area type</h2></div>
+
+<div class="col-xs-12">
+    @using (Html.BeginForm("Edit", "AreaType", FormMethod.Post, new {@class = "form-horizontal", @role = "form"}))
+    {
+        @Html.HiddenFor(model => model.Code)
+        <div class="body-content">
+            <div class="form-group row">
+                @Html.LabelFor(m => m.IsGroup, new { @class = "col-xs-3 control-label" })
+                <div class="col-xs-4">
+                    @Html.CheckBoxFor(m => m.IsGroup, new { @disabled = "disabled" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Code, new { @class = "col-xs-3 control-label" })
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control input-sm", @disabled = "disabled" })
+                </div>
+            </div>
+            @Html.Partial("_LabelControl", Model)
+            <div id="alternate-labels-group">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.AlternateLabels, new { @class = "col-xs-3 control-label" })
+                    <div class="col-xs-3">
+                        <input autocomplete="off" class="form-control input-sm" id="AlternateLabels_0_" name="AlternateLabels[0]" placeholder="Alternate name of area type" type="text" />
+                    </div>
+                    <div class="col-xs-1">
+                        <button class="btn btn-sm btn-link" onclick="AddAlternateLabel();" type="button">
+                            <span class="glyphicon glyphicon-ok-sign icon-green" title="Add"></span>
+                        </button>
+                    </div>
+                    <div class="col-xs-5">
+                        @Html.ValidationMessageFor(m => m.AlternateLabels)
+                    </div>
+                </div>
+                @for (var index = 1; index <= Model.AlternateLabels.Count; index++)
+                {
+                    <div class="form-group row" id="alternate-label-group-@index">
+                        <div class="col-xs-offset-3 col-xs-3">
+                            @Html.TextBoxFor(m => m.AlternateLabels[index - 1], new { @autocomplete = "off", @class = "form-control input-sm" })
+                        </div>
+                        <div class="col-xs-1">
+                            <button class="btn btn-sm btn-link" onclick="RemoveAlternateLabel(@index);" type="button">
+                                <span class="glyphicon glyphicon-minus-sign icon-red" title="Remove"></span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (Model.IsGroup)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.GroupMembers, new { @class = "col-xs-3 control-label" })
+                    <div class="col-xs-3">
+                        @Html.ListBoxFor(m => m.GroupMembers, new SelectList(Model.AreaTypes, "Code", "Label"), new { @class = "form-control input-sm" })
+                        <div class="help-block">Hold CTRL and click to select multiple items</div>
+                    </div>
+                    <div class="col-xs-1">
+                        <button class="btn btn-sm btn-link" role="button" type="button" onclick="$('#GroupMembers').attr('size',@Model.AreaTypes.Count());">
+                            <span class="glyphicon glyphicon-resize-full" title="Maximize"></span>
+                        </button>
+                        <button class="btn btn-sm btn-link" role="button" type="button" onclick="$('#GroupMembers').attr('size', 3);">
+                            <span class="glyphicon glyphicon-resize-small" title="Minimize"></span>
+                        </button>
+                    </div>
+                    <div class="col-xs-5">
+                        @Html.ValidationMessageFor(m => m.GroupMembers)
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ParentTypes, new { @class = "col-xs-3 control-label" })
+                    <div class="col-xs-3">
+                        @Html.ListBoxFor(m => m.ParentTypes, new SelectList(Model.AreaTypes, "Code", "Label"), new { @class = "form-control input-sm" })
+                        <div class="help-block">Hold CTRL and click to select multiple items</div>
+                    </div>
+                    <div class="col-xs-1">
+                        <button class="btn btn-sm btn-link" role="button" type="button" onclick="$('#ParentTypes').attr('size',@Model.AreaTypes.Count());">
+                            <span class="glyphicon glyphicon-resize-full" title="Maximize"></span>
+                        </button>
+                        <button class="btn btn-sm btn-link" role="button" type="button" onclick="$('#ParentTypes').attr('size', 3);">
+                            <span class="glyphicon glyphicon-resize-small" title="Minimize"></span>
+                        </button>
+                    </div>
+                    <div class="col-xs-5">
+                        @Html.ValidationMessageFor(m => m.ParentTypes)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ChildTypes, new { @class = "col-xs-3 control-label" })
+                    <div class="col-xs-3">
+                        @Html.ListBoxFor(m => m.ChildTypes, new SelectList(Model.AreaTypes, "Code", "Label"), new { @class = "form-control input-sm" })
+                        <div class="help-block">Hold CTRL and click to select multiple items</div>
+                    </div>
+                    <div class="col-xs-1">
+                        <button class="btn btn-sm btn-link" role="button" type="button" onclick="$('#ChildTypes').attr('size',@Model.AreaTypes.Count());">
+                            <span class="glyphicon glyphicon-resize-full" title="Maximize"></span>
+                        </button>
+                        <button class="btn btn-sm btn-link" role="button" type="button" onclick="$('#ChildTypes').attr('size', 3);">
+                            <span class="glyphicon glyphicon-resize-small" title="Minimize"></span>
+                        </button>
+                    </div>
+                    <div class="col-xs-5">
+                        @Html.ValidationMessageFor(m => m.ChildTypes)
+                    </div>
+                </div>
+            }
+            <div class="form-group @permissionClass">
+                @Html.LabelFor(m => m.MetricUploadPermissionLevelId, new { @class = "col-xs-3 control-label" })
+                <div class="col-xs-4">
+                    @Html.DropDownListFor(m => m.MetricUploadPermissionLevelId, new SelectList(Model.MetricUploadPermissionLevels, "Id", "Description"), new { @class = "form-control input-sm" })
+                </div>
+                <div class="col-xs-5">
+                    @Html.ValidationMessageFor(m => m.MetricUploadPermissionLevelId)
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.SameAsLink, new { @class = "col-xs-3 control-label" })
+                <div class="col-xs-4">
+                    @Html.TextBoxFor(m => m.SameAsLink, new { @placeholder = "SameAs external link", @autocomplete = "off", @class = "form-control input-sm" })
+                    <div class="help-block">A link to an external definition of this area. See <a href="http://www.w3.org/TR/owl-ref/#sameAs-def">owl:sameAs</a> for more information.</div>
+                </div>
+                <div class="col-xs-5">
+                    @Html.ValidationMessageFor(m => m.SameAsLink)
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-offset-3 col-xs-10">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-floppy-save"></span>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+</div>

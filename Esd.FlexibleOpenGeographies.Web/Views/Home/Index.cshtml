@@ -1,0 +1,227 @@
+﻿@using System.Configuration
+@using Esd.FlexibleOpenGeographies.SignIn.Principal
+
+@model Esd.FlexibleOpenGeographies.Web.Models.HomeModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.MessageText))
+{
+    <div class="alert alert-success alert-dismissable" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-ok-circle"></span>
+        @Model.MessageText
+    </div>
+}
+
+<div class="alert alert-info alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <span class="glyphicon glyphicon-info-sign"></span>
+    Create your own custom areas and area types.
+    An area can be designed as a shape (an area on a map) or as a set of other areas.
+    Each area will belong to an area type.
+    Area types are organised into a hierarchy so that a type can consist of smaller types and can fit into larger types.
+    For example, a district fits into a county and is made up of administrative wards.
+    Metrics can be added relating to your areas.
+</div>
+
+@if (ConfigurationManager.AppSettings["HasSignIn"] == "true" && (User as CustomPrincipal) == null)
+{
+    <div class="alert alert-warning alert-dismissable" role="alert">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <span class="glyphicon glyphicon-user"></span>
+        You are not signed in.
+        If you sign in this page will have shortcuts to areas and area types created by you or your organisation.        
+        Additionally, only signed in users can create areas or area types.
+    </div>
+}
+else
+{
+    if (ConfigurationManager.AppSettings["HasSignIn"] == "true" && (User as CustomPrincipal) != null)
+    {
+        <div class="alert alert-success alert-dismissable" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <span class="glyphicon glyphicon-user"></span>
+            Welcome <strong>@((User as CustomPrincipal).Name)</strong>. Below are areas and area types you
+            @if (!string.IsNullOrEmpty((User as CustomPrincipal).OrganisationName))
+            {
+                <span> or other members of <strong>@((User as CustomPrincipal).OrganisationName)</strong> </span>
+            }
+            have added.
+        </div>
+    }
+    <div class="panel panel-default col-xs-6">
+        <div class="panel-heading">Area types</div>
+        <div class="panel-body">
+            <div class="btn-group-vertical btn-block">
+                <a href="@Url.RouteUrl("AddAreaType")" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                    Create new area type
+                </a>
+                <a href="@Url.RouteUrl("SelectAreaType")" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search"></span>
+                    Find area type
+                </a>
+                @if (Model.AreaTypes.Any())
+                {
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            View details
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var areaType in Model.AreaTypes)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("SelectAreaType", new { typeCode = areaType.Code, tab = "tab-details" } )">
+                                        @areaType.Label
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-globe"></span>
+                            View map
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var areaType in Model.AreaTypes)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("SelectAreaType", new { typeCode = areaType.Code, tab = "tab-map" } )">
+                                        @areaType.Label
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-edit"></span>
+                            Edit details
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var areaType in Model.AreaTypes)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("EditAreaType", new { code = areaType.Code })">
+                                        @areaType.Label
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-paperclip"></span>
+                            Edit relationship details
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var areaType in Model.AreaTypes)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("EditAreaTypeRelationship", new { code = areaType.Code })">
+                                        @areaType.Label
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default col-xs-6">
+        <div class="panel-heading">Areas</div>
+        <div class="panel-body">
+            <div class="btn-group btn-group-vertical btn-block">
+                <a href="@Url.RouteUrl("AddArea")" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                    Create new area
+                </a>
+                <a href="@Url.RouteUrl("SelectArea")" class="btn btn-default">
+                    <span class="glyphicon glyphicon-search"></span>
+                    Find area
+                </a>
+                @if (Model.Areas.Any())
+                {
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            View details
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var area in Model.Areas)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("SelectArea", new { tab = "tab-details", areaId = area.Id })">
+                                        @area.Label
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-globe"></span>
+                            View map
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var area in Model.Areas)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("SelectArea", new { tab = "tab-map", areaId = area.Id })">
+                                        @area.Label
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-link"></span>
+                            View linked areas
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var area in Model.Areas)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("SelectArea", new { tab = "tab-linked-areas", areaId = area.Id })">
+                                        @area.Label
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-edit"></span>
+                            Edit
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var area in Model.Areas)
+                            {
+                                <li>
+                                    <a href="@Url.RouteUrl("EditArea", new { id = area.Id })">
+                                        @area.Label
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

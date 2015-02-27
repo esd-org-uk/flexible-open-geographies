@@ -1,0 +1,25 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.AreaParentsModel
+
+<div id="existing-parents-container">
+    <h4>Existing parent areas</h4>
+    @if (!Model.Areas.Any())
+    {
+        <span>None</span>
+    }
+    else
+    {
+        foreach (var area in Model.Areas)
+        {
+            using (Ajax.BeginForm("DeleteParent", "Area", null, new AjaxOptions { HttpMethod = "Post", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "existing-parents-container" }, new { }))
+            {
+                @Html.Hidden("ChildAreaId", Model.AreaId)
+                @Html.Hidden("ParentAreaId", area.Id)
+                <div class="form-group row">
+                    <label class="col-xs-2">@area.TypeName</label>
+                    <span>@area.Label</span>
+                    <button class="btn btn-sm btn-link" type="submit"><span class="glyphicon glyphicon-minus-sign icon-red"></span></button>
+                </div>
+            }
+        }
+    }
+</div>

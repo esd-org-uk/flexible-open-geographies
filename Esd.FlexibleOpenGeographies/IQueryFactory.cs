@@ -1,0 +1,83 @@
+﻿using Esd.FlexibleOpenGeographies.Data;
+using Esd.FlexibleOpenGeographies.Dtos;
+using System.Collections.Generic;
+
+namespace Esd.FlexibleOpenGeographies
+{
+    public interface IQueryFactory
+    {
+        IQueryEnumerable<AreaBasicWithType> CreateAllAreasWithNoKmlQuery();
+        IQueryEnumerable<AreaBasicWithType> CreateAllAreasWithKmlQuery();
+        IQueryEnumerable<AreaBasicWithType> CreateAllAreasWithGeometryQuery();
+        IQueryEnumerable<AreaTypeBasic> CreateAreaTypesBasicQuery(bool includeGroups);
+        IQueryEnumerable<AreaTypeBasic> CreateNonEmptyAreaTypesBasicQuery(bool includeGroups);
+        IQuerySingle<UploadBasic> CreateUploadBasicSingleQuery();
+        IQueryEnumerable<MetricTypeBasic> CreateMetricTypesBasicQuery();
+        IQueryEnumerable<AreaTypeBasic> CreateTypeHierarchiesByAreaCodeQuery(string code);
+        IQuerySingle<AreaBasicWithType> CreateAreaBasicWithTypeForIdQuery(int id);
+        IQueryEnumerable<AreaBasicWithType> CreateParentAreaBasicWithTypeForIdQuery(int id);
+        IQueryEnumerable<AreaTypeBasic> CreateParentAreaTypesForTypeQuery(string typeCode);
+        IQueryEnumerable<AreaBasicWithType> CreateAreaBasicWithTypeForTypeQuery(string typeCode);
+        IQueryEnumerable<AreaTypeBasic> CreateAreaTypesByTypesQuery(List<TypeHierarchyBasic> hierarchies);
+        IQueryEnumerable<MetricBasic> CreateMetricDownloadQuery(string metricTypeCode, string periodCode, int areaId);
+        IQueryEnumerable<MetricBasic> CreateMetricDownloadQuery(string metricTypeCode, string periodCode, int areaId, string areaTypeCode);
+        IQueryEnumerable<MetricBasic> CreateMetricDownloadQuery(string metricTypeCode, string periodCode, int areaId, bool includeMissingValues);
+        IQueryEnumerable<MetricBasic> CreateMetricDownloadQuery(string metricTypeCode, string periodCode, int areaId, string areaTypeCode, bool includeMissingValues);
+        IQueryEnumerable<PeriodBasic> CreatePeriodBasicByMetricTypeQuery(string identifier);
+        IQuerySingle<PeriodBasic> CreatePeriodByCodeQuery(string code);
+        IQuerySingle<MetricTypeBasic> CreateMetricTypeForCodeQuery(string identifier);
+        IQueryEnumerable<MetricTypeBasic> CreateMetricTypeForTermQuery(string term);
+        IQueryEnumerable<string> CreateMetricTypeIdsWithDataQuery();
+        IQuerySingle<MetricAggregationBasic> CreateMetricAggregationForAreaTypeAndMetricTypeQuery(string identifier, string areaTypeCode);
+        IQueryEnumerable<string> CreatePeriodIdsWithDataQuery();
+        IQueryEnumerable<AreaBasic> CreateAreaBasicForTypeQuery(string typeCode, int limit);
+        IQueryEnumerable<AreaBasic> CreateAreaBasicForTypeAndTermQuery(string typeCode, string term);
+        IQuerySingle<AreaDetailsNoGeography> CreateAreaDetailsByIdQuery(int id);
+        IQuerySingle<AreaDetailsNoGeography> CreateAreaDetailsByTypeAndCodeQuery(string typeCode, string code);
+        IQueryEnumerable<AreaBasicWithType> CreateAreaBasicWithTypeByBoundingGroup(int areaId, string areaType);
+        IQuerySingle<AreaBasicWithType> CreateAreaBasicWithTypeForTypeAndCode(string areaCode, string areaType);
+        IQuerySingle<string> CreateKmlForIdQuery(int id);
+        IQuerySingle<string> CreateKmlForTypeAndCodeQuery(string typeCode, string code);
+        IQueryEnumerable<AreaTypeBasic> CreateChildTypesForAreaTypeQuery(string areaTypeCode);
+        IQueryEnumerable<AreaBasic> CreateFilteredAreaBasicForTypeQuery(string typeCode, string filter);
+        IQueryEnumerable<AreaBasicWithType> CreateParentAreasForAreaQuery(int id);
+        IQueryEnumerable<AreaBasicWithType> CreateChildAreasForAreaQuery(int id);
+        IQuerySingle<AreaTypeDetails> CreateAreaTypeDetailsByCodeQuery(string code);
+        IQuerySingle<string> CreateShortCodeForTypeCodeQuery(string code);
+        IQuerySingle<bool> CreateCanBeEditedQuery(string creator, string organisation, UserBasic currentUser);
+        IQuerySingle<string> CreateColourForIdQuery(int id);
+        IQueryEnumerable<AreaBasicWithType> CreateAreasForUserQuery(UserBasic user);
+        IQueryEnumerable<AreaTypeBasic> CreateAreaTypesForUserQuery(UserBasic user);
+        IQuerySingle<User> CreateUserByUniqueIdQuery(string id);
+        IQuerySingle<string> CreateAreaTypeCodeForLabelQuery(string label);
+        IQueryEnumerable<AreaTypeMetricUploadPermissionLevel> CreateAllMetricUploadPermissionLevelsQuery();
+        IQuerySingle<string> CreateMetricUploadPermissionLevelDescriptionByIdQuery(int id);
+        IQuerySingle<string> CreateGeoJsonForAreaQuery(string typeCode, string code, string name);
+        IQueryEnumerable<TypeHierarchyBasic> CreateTypeHierarchiesForAreaTypeQuery(string code);
+        IQueryEnumerable<int> CreateChildAreaCodesForAreasAndAreaTypeQuery(List<int> ids, string areaType);
+        IQueryEnumerable<AreaBasicWithType> CreateChildAreasForAreaAndAreaTypeQuery(int id, string areaType);
+        IQueryEnumerable<int> CreateChildAreaIdsForAreaAndAreaTypeQuery(int id, string areaType);
+        IQueryEnumerable<MetricBasic> CreateMetricDownloadQuery(string metricTypeCode, string periodCode, List<int> areaCodes);
+        IQueryEnumerable<TypeHierarchyWithLabels> CreateTypeHierarchiesWithLabelsForTypeQuery(string typeCode);
+        IQueryEnumerable<AreaForCalcuatedGeometry> CreateAreasForCalculatedGeometryQuery();
+        IQuerySingle<AreaBasic> CreateAreaBasicForTypeAndCoordinatesQuery(string typeCode, double x, double y);
+        IQueryEnumerable<AreaBasicWithType> CreateAreaBasicForCoordinatesQuery(double x, double y);
+        IQuerySingle<string> CreateValidateTypeCodeQuery(string code);
+        IQuerySingle<string> CreateValidateAreaCodeQuery(string code);
+        IQuerySingle<BoundingBox> CreateBoundingBoxForTypeQuery(string code);
+        IQuerySingle<BoundingBox> CreateBoundingBoxForAreaQuery(string typeCode, string areaCode);
+        IQuerySingle<BoundingBox> CreateBoundingBoxForAreasQuery(IEnumerable<int> areaIds);
+        IQueryEnumerable<int> CreateAreaIdsForTypeAndBoxQuery(string typeCode, double minX, double minY, double maxX, double maxY);
+        IQueryEnumerable<int> CreateFilterAreaIdsByAreaTypeQuery(IEnumerable<int> areaIds, string typeCode);
+        IQuerySingle<string> CreateLabelForAreaIdQuery(int id);
+        IQueryEnumerable<Dtos.AreaResource> CreateResourcesForAreaQuery(int id);
+        IQueryEnumerable<Dtos.AreaTypeResource> CreateResourcesForAreaTypeQuery(string typeCode);
+        IQueryEnumerable<AreaBasicWithType> CreateSuggestedParentAreaBasicWithTypeForIdQuery(int areaId);
+        IQuerySingle<int> CreateAreaIdForTypeAndCodeQuery(string areaType, string areaCode);
+        IQueryEnumerable<int> CreateAreaIdsForTypeAndAncestorQuery(int ancestorId, string typeCode);
+        IQueryEnumerable<int> CreateFilterAreaIdsByAncestorQuery(IEnumerable<int> areas, string typeCode, string boundingType, string boundingArea);
+        IQueryEnumerable<AreaTypeBasic> CreateAncestorTypesForAreaTypeQuery(string typeCode);
+        IQueryEnumerable<string> CreateTypeCodesForAreaTypeGroupQuery(string typeCode);
+        IQuerySingle<AreaBasic> CreateAreaByIdOrCodeQuery(string idOrCode, string typeCode);
+    }
+}

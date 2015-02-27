@@ -1,0 +1,39 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.IAreaCodeSelectDropdowns
+
+<div>@Html.Label("Limit to area:")</div>
+@Html.Partial("_AreaSelectByCodeDropdowns", Model)
+<div class="form-group row">
+    <small class="help-block">
+        Select an area to show the bounding area on the map and zoom to it.
+    </small>
+</div>
+
+<script type="text/javascript">
+    function filterBoundedType(typeCode) {
+        var allowedTypes = [];
+        $.ajaxSetup({ async: false });
+        $.getJSON('@Url.RouteUrl("AncestorTypesForType")', { 'typeCode': typeCode }, function(data) {
+            $.each(data, function (i, allowedType) { allowedTypes.push(allowedType.Code); });
+        });
+        var resetCodeValue = false;
+        var currentValue = $('#AreaCodeSelectTypeCode').val();
+        $.each($('#AreaCodeSelectTypeCode option'), function (i, option) {
+            if (typeCode != null && typeCode != '' && option.value != '' && $.inArray(option.value, allowedTypes) === -1) {
+                option.disabled = true;
+                if (currentValue === option.value) resetCodeValue = true;
+            } else {
+                option.disabled = false;
+            }
+        });
+        $.ajaxSetup({ async: true });
+        if (resetCodeValue) {
+            $('#AreaCodeSelectTypeCode').val('');
+            $('#AreaCodeSelectAreaCode').val('');
+            $('#AreaCodeSelectAreaCodeText').val('');
+        }
+    };
+
+    function AreaCodeSelectAreaChanged() {
+        if (typeof BoundingAreaChanged === 'function') BoundingAreaChanged();
+    };
+</script>

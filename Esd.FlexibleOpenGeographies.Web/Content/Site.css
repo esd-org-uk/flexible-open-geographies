@@ -1,0 +1,283 @@
+﻿/*
+    Open layers classes - already defined in ol.css so use !important if required
+    For zoomslider and button controls these values taken from openlayers.org/en/v3.1.1/examples/zoomslider.html then amended
+*/
+
+.ol-zoom .ol-zoom-out {
+  margin-top: 204px !important;
+}
+
+.ol-zoomslider {
+    background-color: transparent;
+    top: 2.3em !important;
+    left: calc(0.5em + 2px) !important;
+    width: calc(1.375em + 6px) !important;
+}
+
+.ol-zoomslider-thumb {
+    margin: 1px !important;
+}
+
+.ol-touch .ol-zoom .ol-zoom-out { 
+  margin-top: 212px !important;
+}
+
+.ol-touch .ol-zoomslider {
+  top: 2.75em !important;
+}
+
+.ol-zoom-in.ol-has-tooltip:hover [role=tooltip],
+.ol-zoom-in.ol-has-tooltip:focus [role=tooltip] {
+  top: 3px !important;
+}
+
+.ol-zoom-out.ol-has-tooltip:hover [role=tooltip],
+.ol-zoom-out.ol-has-tooltip:focus [role=tooltip] {
+  top: 232px !important;
+}
+
+/*
+    End Open layers
+*/
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-weight: 300;
+    font-size: small;
+}
+
+body {
+    padding-top: 100px;
+    padding-bottom: 20px;
+    background-color: #faf8f8;
+}
+
+.top-menu-nav, .top-menu-nav .dropdown-menu {
+    background-color: #6f6e6e;
+    font-weight: bold;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.left-menu {
+    float: left;
+    margin-left: 100px;
+}
+
+.right-menu {
+    float: right;
+    margin-right: 150px;
+}
+
+.top-menu-nav li {
+    vertical-align: middle;
+    display: block;
+}
+
+.top-menu-nav a {
+    text-decoration: none;
+    color: #f3f3f3 !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    width: 100%;
+}
+
+.top-menu-nav a:hover, .top-menu-nav a:focus {
+    background-color: initial !important;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+.background-header-title {
+    height: 8.4em;
+    text-align: right;
+}
+
+.background-header-title h1 {
+    color: #373131;
+    font-size: 2.2em;
+    padding-top: 0.6em;
+}
+
+.background-header-title h2 {
+    color: #7d787c;
+    font-weight: normal;
+    font-size: 2.2em;
+    line-height: 1em;
+    margin: -0.1em;
+}
+
+/* Set padding to keep content from hitting the edges */
+
+.body-content {
+    padding: 1em;
+    padding-left: 15px;
+    padding-right: 15px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    border-bottom-right-radius: 6px;
+    border-top-right-radius: 6px;
+    margin: 1.4em;
+    border: solid 1px #cccccc;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+.color {
+    width: 80px;
+}
+
+.field-validation-error {
+    font-weight:bold;
+    color:red;
+}
+
+.input-validation-error {
+    border-color: #a94442;
+    -webkit-box-shadow: inset 0 1px 1px #000000;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px #000000;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    background-color: #f0ffff;
+    background-color: rgba(252, 0, 0, 0.05);
+}
+
+.validation-summary-errors {
+    font-weight:bold;
+    color:red;
+}
+
+.clear {
+    clear: both;
+}
+
+.form-group.required .control-label:after {
+    content: " *";
+}
+
+.map {
+    height: 400px;
+    width: 100%;
+}
+
+.colour-box {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+}
+
+.cursor-hand {
+    cursor: pointer;
+}
+
+.small-text
+{
+	font-size:0.9em;
+}
+
+.icon-red {
+    color: #ff0000;
+}
+
+.icon-green {
+    color: #00ff00;
+}
+
+.map-popup {
+    z-index: 999;
+    background-color: #000000;
+    color: #ffffff;
+    position: fixed;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.left-padded-30 {
+    padding-left: 30px;
+}
+
+.top-padded-30 {
+    padding-top: 30px;
+}
+
+.stages {
+    display: inline-block;
+    padding: 6px 12px;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid;
+}
+
+.stage-inactive {
+    color: #333333;
+    background-color: #ffffff;
+    border-color: #cccccc;
+}
+
+.stage-active {
+    color: #ffffff;
+    background-color: #428bca;
+    border-color: #357ebd;
+}
+
+.selection-info-control {
+    position: absolute;
+    top: 0.5em;
+    right: 1.7em;
+    border-radius: 4px 0 0 4px;
+    border-left-width: 3px;
+    border-right-width: 0;
+    z-index: 100;
+}
+
+.selection-info-control:hover {
+    background-color: #ffffff;
+    background-color: rgba(255,255,255,.6);
+}
+
+.selection-info-control button {
+    display: inline-block;
+}
+
+.btn-no-outline:focus {
+    outline: none !important;
+}
+
+.selection-info-panel {
+    position: absolute;
+    padding: 10px;
+    text-align: center;
+    border-radius: 4px;
+    vertical-align: middle;
+    color: #ffffff;
+    background-color: #666666;
+    z-index: 100;
+    opacity: 0.8;
+}
+
+.column-selector {
+    padding: 10px;
+}
+
+option:disabled {
+    display: none;
+}

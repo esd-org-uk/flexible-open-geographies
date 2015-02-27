@@ -1,0 +1,135 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.AreaTypeSelectModel
+
+@{
+    ViewBag.Title = "View area type";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript">
+        function TypeChanged() {
+            var selectedType = $('#TypeCode').val();
+            $('#tab-details').empty();
+            if (selectedType != null && selectedType != '') {
+                $.get('@Url.RouteUrl("AreaTypeDetailsPartial")', { code: selectedType }, function(data) {
+                    $('#tab-details').html(data);
+                });
+                if (($('#map-container:visible').length)) {
+                    RefreshMap();
+                }
+                $.get('@Url.RouteUrl("AreaTypeResourcesPartial")', { code: selectedType }, function (data) {
+                    $('#tab-resources').html(data);
+                });
+            }
+            if (typeof filterBoundedType === 'function') filterBoundedType(selectedType);
+        };
+
+        function BoundingAreaChanged() {
+            if (($('#map-container:visible').length)) {
+                RefreshMap();
+            }
+        };
+
+        function RefreshMap() {
+            var boundingType = $('#AreaCodeSelectTypeCode').val();
+            var boundingArea = $('#AreaCodeSelectAreaCode').val();
+            MapUtility.selectedAreas = [];
+            MapUtility.showMapForType($('#TypeCode').val(), boundingType, boundingArea);
+        };
+
+        $(document).ready(function() {
+            MapUtility.warningDiv = $('#show-map-warning');
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                if (e.target.hash == '#tab-map') {
+                    RefreshMap();
+                }
+            });
+            var tab = querystring['tab'];
+            if (tab != null && tab != '') {
+                $('a[href="#' + tab + '"]').tab('show');
+            }
+            TypeChanged();
+        });
+
+        function hideSelectors() {
+            $('#show-button').removeClass('hide');
+            $('#area-selectors').addClass('hide');
+        };
+
+        function showSelectors() {
+            $('#show-button').addClass('hide');
+            $('#area-selectors').removeClass('hide');
+        };
+    </script>
+}
+@section styles
+{
+    @Styles.Render("~/OpenLayers3/ol.css")
+}
+@section headscripts
+{
+    @Scripts.Render("~/OpenLayers3/ol.js")
+    @Scripts.Render("~/Scripts/esd.maputility.js")
+}
+
+<div class="alert alert-info alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <p>
+        <span class="glyphicon glyphicon-info-sign"></span> Select an area type to view its details.
+        Select a bounding area to mark that area on the map and zoom in to it.
+    </p>
+</div>
+
+<div id="show-map-warning" class="alert alert-warning hide"></div>
+
+<div class="page-header"><h2>View an area type</h2></div>
+
+<div id="area-selectors">
+    <div class="col-xs-1">
+        <button id="hide-button" class="btn btn-sm btn-link" type="button" role="button" onclick="hideSelectors();" title="Hide dropdowns">
+            <span id="hide-icon" class="glyphicon glyphicon-resize-small"></span>
+        </button>
+    </div>
+    <div class="col-xs-4">
+        <div class="form-group">
+            <div>@Html.LabelFor(m => m.TypeCode)</div>
+            <div>@Html.DropDownListFor(m => m.TypeCode, new SelectList(Model.AreaTypes, "Code", "Label"), "-- select area type --", new { onchange = "TypeChanged();", @class = "input-sm" })</div>
+        </div>
+    </div>
+    <div class="col-xs-4">
+        @Html.Partial("_MapBoundedAreaSelect", Model)
+    </div>
+</div>
+
+<div class="col-xs-12">
+    <button id="show-button" class="btn btn-sm btn-link hide" type="button" role="button" onclick="showSelectors();" title="Show dropdowns">
+        <span id="show-icon" class="glyphicon glyphicon-resize-full"></span>
+    </button>
+    <ul class="nav nav-pills">
+        <li class="active">
+            <a id="tab-details-link" href="#tab-details" data-toggle="tab">
+                <span class="glyphicon glyphicon-list-alt"></span>
+                Details
+            </a>
+        </li>
+        <li>
+            <a id="tab-map-link" href="#tab-map" data-toggle="tab">
+                <span class="glyphicon glyphicon-globe"></span>
+                Map
+            </a>
+        </li>
+        <li>
+            <a id="tab-resources-link" href="#tab-resources" data-toggle="tab">
+                <span class="glyphicon glyphicon-book"></span>
+                Documents &amp; links
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content body-content">
+        <div id="tab-details" class="tab-pane fade in active"></div>
+        <div id="tab-map" class="tab-pane fade">
+            @Html.Partial("_Map")
+        </div>
+        <div id="tab-resources" class="tab-pane fade"></div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.AreaParentsModel
+
+<h4>Suggested parent areas (overlapping including touching)</h4>
+
+@if (!Model.Areas.Any())
+{
+    <span>No suggestions found</span>
+}
+else
+{
+    foreach (var area in Model.Areas)
+    {
+        using (Ajax.BeginForm("AddParent", "Area", null, new AjaxOptions {HttpMethod = "Post", InsertionMode = InsertionMode.ReplaceWith, UpdateTargetId = "existing-parents-container"}, new {}))
+        {
+            @Html.Hidden("ChildAreaId", Model.AreaId)
+            @Html.Hidden("ParentAreaId", area.Id)
+            <div class="form-group row">
+                <label class="col-xs-2">@area.TypeName</label>
+                <span>@area.Label</span>
+                <button class="btn btn-sm btn-link" type="submit" onclick=" $(this).parent().hide(); "><span class="glyphicon glyphicon-ok-sign icon-green"></span></button>
+            </div>
+        }
+    }
+}

@@ -1,0 +1,68 @@
+﻿@using Esd.FlexibleOpenGeographies.Dtos
+@model Esd.FlexibleOpenGeographies.Web.Models.AreaLinkedAreasModel
+
+<div class="form-horizontal">
+    <h4>Areas this fits inside</h4>
+    @if (Model.ParentAreas.Any())
+    {
+        <div class="form-group row">
+            <strong class="col-xs-5">Area</strong>
+            <strong class="col-xs-3">Code</strong>
+            <strong class="col-xs-4">Type</strong>
+        </div>
+        foreach (var parentArea in Model.ParentAreas)
+        {
+            <div class="form-group row">
+                <div class="col-xs-5">@Html.Partial("_AreaLink", parentArea)</div>
+                <div class="col-xs-3">@parentArea.Code</div>
+                <div class="col-xs-4">@Html.Partial("_AreaTypeLink", new AreaTypeBasic
+                                      {
+                                          Code = parentArea.TypeCode, Label = parentArea.TypeName
+                                      })</div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="form-group row">
+            <div class="col-xs-12">None</div>
+        </div>
+    }
+    <div class="form-group row">
+        <small class="col-xs-12"><a href="@Url.RouteUrl("EditAreaParents", new { id = Model.AreaId })">Edit parents</a></small>
+    </div>
+    <hr/>
+    <h4>Areas this is made up of</h4>
+    @if (Model.ChildAreas.Any())
+    {
+        <div class="form-group row">
+            <strong class="col-xs-5">Area</strong>
+            <strong class="col-xs-3">Code</strong>
+            <strong class="col-xs-4">Type</strong>
+        </div>
+        foreach (var childArea in Model.ChildAreas.OrderBy(area => area.TypeName))
+        {
+            <div class="form-group row">
+                <div class="col-xs-5">@Html.Partial("_AreaLink", childArea)</div>
+                <div class="col-xs-3">@childArea.Code</div>
+                <div class="col-xs-4">
+                    @Html.Partial("_AreaTypeLink", new AreaTypeBasic
+                                      {
+                                          Code = childArea.TypeCode,
+                                          Label = childArea.TypeName
+                                      })
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="form-group row">
+            <div class="col-xs-12">None</div>
+        </div>
+    }
+
+    <div class="form-group row">
+        <small class="col-xs-12"><a href="@Url.RouteUrl("EditAreaChildren", new { id = Model.AreaId })">Edit children</a></small>
+    </div>
+</div>

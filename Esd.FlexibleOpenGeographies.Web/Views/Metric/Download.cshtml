@@ -1,0 +1,206 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.MetricDownloadModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Download metrics";
+}
+@section scripts
+{
+    @Scripts.Render("~/Scripts/jscolor.js")
+}
+<style>
+
+</style>
+<script type="text/javascript">
+    var metricTypesWithData = {};
+    var periodsWithData = {};
+    var periodDataOnly = true;
+    var metricTypeDataOnly = true;
+
+    function PeriodDataOnlyChanged() {
+        periodDataOnly = !periodDataOnly;
+        TypeChanged();
+    }
+
+    function MetricTypeDataOnlyChanged()
+    {
+        metricTypeDataOnly = !metricTypeDataOnly;
+    }
+
+    function AreaTypeChanged() {
+        $('#AreaText').val("");
+    };
+
+    function TypeChanged() {
+        var selected = false;
+        var selectedType = ($('#MetricType')).val();
+        var periodSelect = $('#Period');
+        periodSelect.empty();
+        periodSelect.append($('<option/>', { value: '', text: '-- select period --' }));
+        if (selectedType != null && selectedType != '') {
+            $.getJSON('@Url.RouteUrl("PeriodsForMetricType")', { typeCode: selectedType }, function (periods) {
+                $.each(periods, function (index, period) {
+                    if (periodDataOnly && !periodsWithData[period.value])
+                    {
+                        return;
+                    }
+
+                    var option = $('<option/>');
+                    option.attr({ 'value': period.value }).text(period.text);
+
+                    if (!periodDataOnly && periodsWithData[period.value]) {
+                        option.attr("style", "font-weight:bold !important");
+                    }
+
+                    if (periodsWithData[period.value] && !selected) {
+                        selected = true;
+                        option.attr('selected', 'selected');
+                    }
+
+                    periodSelect.append(option);
+                });
+            });
+        }
+    };
+
+    function AreaChanged() {
+        var selectedType = ($('#Area')).val();
+        var bySelect = $('#ByArea');
+        bySelect.empty();
+        bySelect.append($('<option/>', { value: '', text: 'select an area of type...' }));
+        if (selectedType != null && selectedType != '') {
+            $.getJSON('@Url.RouteUrl("TypeHierarchyForAreaType")', { typeCode: selectedType }, function (types) {
+                $.each(types, function (index, type) {
+                    bySelect.append($('<option/>', {
+                        value: type.value,
+                        text: type.text
+                    }));
+                });
+            });
+        }
+    };
+
+function CreateMetricTypeItem(ul, item) 
+{        
+    var li = $("<li>");
+    if (metricTypesWithData[item.value])
+    {
+        li.attr("style", "font-weight:bold !important");
+    }
+    return li.attr("data-value", item.value).append(item.label).appendTo(ul);
+}
+
+function getMetricTypeUrl() {
+    if (metricTypeDataOnly)
+    {
+        return "MetricTypesForTerm?includeMissing=false";
+    }
+    return "MetricTypesForTerm?includeMissing=true";
+}
+
+function getAreaTypeUrl()
+{
+    var selectedType = ($('#ParentAreaType')).val();
+    return "AreasForTypeAndTerm?typeCode=" + selectedType;
+}
+
+$(document).ready(function () {
+    $.getJSON('MetricTypesWithData?includeMissing=false', function (metricTypeIds) {
+        $.each(metricTypeIds, function (index, metricTypeId) {
+            metricTypesWithData[metricTypeId] = true;
+        });
+    });
+    $.getJSON('PeriodIdsWithData?includeMissing=false', function (periodIds) {
+        $.each(periodIds, function (index, periodId) {
+            periodsWithData[periodId] = true;
+        });
+    });
+    $("#MetricType").combobox({
+        "dataUri": getMetricTypeUrl,
+        "onchange": TypeChanged,
+        "createRenderItem": CreateMetricTypeItem
+    });
+    $("#Area").combobox({
+        "dataUri": getAreaTypeUrl,
+        "onchange": AreaChanged
+    });
+    });
+</script>
+
+<div class="page-header">
+    <h2>Download metrics</h2>
+    <p>Select which metrics you want to download.</p>
+</div>
+
+@using (Html.BeginForm("Download", "Metric", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    <div>
+        <div class="form-group required">
+            @Html.LabelFor(m => m.MetricType, new { @class = "col-xs-2 control-label" })
+            <div class="col-xs-4">
+                <div class="ui-widget">
+                    @Html.DropDownListFor(m => m.MetricType, new SelectList(Model.MetricTypes, "Identifier", "Label"), "-- select metric type --", new { onchange = "TypeChanged();", @class = "form-control input-sm" })                    
+                    </div>
+                @Html.CheckBox("MetricTypeWithDataOnly", new { @checked="checked", onchange = "MetricTypeDataOnlyChanged();" }) <span class="small-text">With data only</span>
+                </div>
+            <div class="col-xs-6">
+                @Html.ValidationMessageFor(m => m.MetricType)
+            </div>
+        </div>
+
+        <div class="form-group required">
+            @Html.LabelFor(m => m.Period, new { @class = "col-xs-2 control-label" })
+            <div class="col-xs-4">
+                @Html.DropDownListFor(m => m.Period, new SelectList(Model.Periods, "Identifier", "Label"), "-- select period --", new { @class = "form-control input-sm" })
+                @Html.CheckBox("PeriodWithDataOnly", new { @checked="checked", onchange = "PeriodDataOnlyChanged();" }) <span class="small-text">With data only</span>
+            </div>
+            <div class="col-xs-6">
+                @Html.ValidationMessageFor(m => m.Period)
+            </div>
+        </div>
+
+        <div class="form-group required">
+            @Html.LabelFor(m => m.ParentAreaType, new { @class = "col-xs-2 control-label" })
+            <div class="col-xs-4">
+                @Html.DropDownListFor(m => m.ParentAreaType, new SelectList(Model.ParentAreaTypes, "Code", "Label"), "select an area of type...", new { onchange = "AreaTypeChanged();", @class = "form-control input-sm" })
+            </div>
+            <div class="col-xs-6">
+                @Html.ValidationMessageFor(m => m.ParentAreaType)
+            </div>
+            @Html.LabelFor(m => m.Area, new { @class = "col-xs-2 control-label", @style="width:auto;" })
+            <div class="col-xs-4">
+                @Html.DropDownListFor(m => m.Area, new SelectList(Model.Areas, "Code", "Label"), "-- select area --", new { onchange = "AreaChanged();", @autocomplete = "off", @class = "form-control input-sm" })
+            </div>
+            <div class="col-xs-6">
+                @Html.ValidationMessageFor(m => m.Area)
+            </div>
+        </div>
+        <div class="form-group required">
+            @Html.LabelFor(m => m.ByArea, new { @class = "col-xs-2 control-label" })
+            <div class="col-xs-4">
+                @Html.DropDownListFor(m => m.ByArea, new SelectList(Model.AreaTypes, "Code", "Label"), "break down by area of type...", new { @autocomplete = "off", @class = "form-control input-sm" })                
+            </div>
+            <div class="col-xs-6">
+                @Html.ValidationMessageFor(m => m.ByArea)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.IncludeMissing, new { @class = "col-xs-2 control-label" })
+            <div class="col-xs-4">
+                @Html.CheckBox("IncludeMissing") 
+            </div>
+            <div class="col-xs-6">
+                @Html.ValidationMessageFor(m => m.IncludeMissing)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-offset-2 col-xs-10">
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-download"></span>
+                    Download
+                </button>
+                <small>Fields marked with * are required</small>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,83 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.Data", "Esd.FlexibleOpenGeographies.Data\Esd.FlexibleOpenGeographies.Data.csproj", "{7F0C5C5E-0649-42E3-B86D-1223A50185BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies", "Esd.FlexibleOpenGeographies\Esd.FlexibleOpenGeographies.csproj", "{B09F350F-651C-47BF-8D88-4CE33995F8B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.Loader", "Esd.FlexibleOpenGeographies.Loader\Esd.FlexibleOpenGeographies.Loader.csproj", "{E0715D8A-C3D0-46CC-913B-2AAC5805E860}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.Web", "Esd.FlexibleOpenGeographies.Web\Esd.FlexibleOpenGeographies.Web.csproj", "{B0116080-C62F-4BB5-8213-B5923355F29F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.Service", "Esd.FlexibleOpenGeographies.Service\Esd.FlexibleOpenGeographies.Service.csproj", "{18F8DC2E-D0D3-4F98-98E2-831F3619FDF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.Service.Functionality", "Esd.FlexibleOpenGeographies.Service.Functionality\Esd.FlexibleOpenGeographies.Service.Functionality.csproj", "{84550A40-C997-4A43-9762-88414153D56F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.Service.Console", "Esd.FlexibleOpenGeographies.Service.Console\Esd.FlexibleOpenGeographies.Service.Console.csproj", "{8895D9F6-0F3D-49FE-B728-D660C4AC94A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.Web.Services", "Esd.FlexibleOpenGeographies.Web.Services\Esd.FlexibleOpenGeographies.Web.Services.csproj", "{B7F89F2F-7FFF-485E-AA56-3F07D2927C1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.SignIn", "Esd.FlexibleOpenGeographies.SignIn\Esd.FlexibleOpenGeographies.SignIn.csproj", "{06A76E7E-7E9E-48E0-A217-D2EC12D58CC9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{C721B1AF-4407-4BC9-B6ED-C6BF8E354405}"
+	ProjectSection(SolutionItems) = preProject
+		Examples\chart.html = Examples\chart.html
+		Examples\map.html = Examples\map.html
+		Examples\table.html = Examples\table.html
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Esd.FlexibleOpenGeographies.Fuseki.Updater", "Esd.FlexibleOpenGeographies.Fuseki.Updater\Esd.FlexibleOpenGeographies.Fuseki.Updater.csproj", "{397F04B3-D100-4518-8366-5C1723A7FBF2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7F0C5C5E-0649-42E3-B86D-1223A50185BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F0C5C5E-0649-42E3-B86D-1223A50185BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F0C5C5E-0649-42E3-B86D-1223A50185BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F0C5C5E-0649-42E3-B86D-1223A50185BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B09F350F-651C-47BF-8D88-4CE33995F8B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B09F350F-651C-47BF-8D88-4CE33995F8B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B09F350F-651C-47BF-8D88-4CE33995F8B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B09F350F-651C-47BF-8D88-4CE33995F8B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0715D8A-C3D0-46CC-913B-2AAC5805E860}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0715D8A-C3D0-46CC-913B-2AAC5805E860}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0715D8A-C3D0-46CC-913B-2AAC5805E860}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0715D8A-C3D0-46CC-913B-2AAC5805E860}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0116080-C62F-4BB5-8213-B5923355F29F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0116080-C62F-4BB5-8213-B5923355F29F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0116080-C62F-4BB5-8213-B5923355F29F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0116080-C62F-4BB5-8213-B5923355F29F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18F8DC2E-D0D3-4F98-98E2-831F3619FDF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18F8DC2E-D0D3-4F98-98E2-831F3619FDF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18F8DC2E-D0D3-4F98-98E2-831F3619FDF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18F8DC2E-D0D3-4F98-98E2-831F3619FDF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84550A40-C997-4A43-9762-88414153D56F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84550A40-C997-4A43-9762-88414153D56F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84550A40-C997-4A43-9762-88414153D56F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84550A40-C997-4A43-9762-88414153D56F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8895D9F6-0F3D-49FE-B728-D660C4AC94A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8895D9F6-0F3D-49FE-B728-D660C4AC94A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8895D9F6-0F3D-49FE-B728-D660C4AC94A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8895D9F6-0F3D-49FE-B728-D660C4AC94A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7F89F2F-7FFF-485E-AA56-3F07D2927C1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7F89F2F-7FFF-485E-AA56-3F07D2927C1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7F89F2F-7FFF-485E-AA56-3F07D2927C1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7F89F2F-7FFF-485E-AA56-3F07D2927C1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06A76E7E-7E9E-48E0-A217-D2EC12D58CC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06A76E7E-7E9E-48E0-A217-D2EC12D58CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06A76E7E-7E9E-48E0-A217-D2EC12D58CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06A76E7E-7E9E-48E0-A217-D2EC12D58CC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{397F04B3-D100-4518-8366-5C1723A7FBF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{397F04B3-D100-4518-8366-5C1723A7FBF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{397F04B3-D100-4518-8366-5C1723A7FBF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{397F04B3-D100-4518-8366-5C1723A7FBF2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

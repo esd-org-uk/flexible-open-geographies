@@ -1,0 +1,41 @@
+﻿@using System.Configuration
+@{
+    //Requires ol.js, esd.maputility.js and ol.css in the view this is contained in
+}
+<div id="map-container" class="map"></div>
+<div id="map-info" style="display: none" class="map-popup"></div>
+<div id="mouse-position"></div>
+
+<div id="selection-info-control" class="selection-info-control ol-unselectable ol-control" style="display: none">
+    <button type="button">
+        <span>?</span>
+    </button>
+</div>
+
+<div id="selection-info-panel" class="selection-info-panel" style="display: none">
+    <div>Click to select or unselect an area.</div>
+    <div>Click and drag while holding shift to select multiple areas at once.</div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        MapUtility.geoServerRoot = '@ConfigurationManager.AppSettings["GeoServerUrl"]';
+
+        $('#selection-info-control').on('click', function () {
+            var panel = $('#selection-info-panel');
+            if (panel.is(':visible')) {
+                panel.hide();
+            } else {
+                var container = $('#map-container');
+                //hack to get width of panel so we can position it
+                var clone = panel.clone().show().css('visibility', 'hidden').appendTo('body');
+                var width = clone.outerWidth();
+                clone.remove();
+                panel.show().css({
+                    'top': '1em',
+                    'left': container.outerWidth() - width - 30 + 'px'
+                });
+            }
+        });
+    });
+</script>

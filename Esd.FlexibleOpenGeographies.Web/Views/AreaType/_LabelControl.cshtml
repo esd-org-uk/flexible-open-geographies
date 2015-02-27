@@ -1,0 +1,47 @@
+﻿@model Esd.FlexibleOpenGeographies.Web.Models.IHasLabel
+
+<script type="text/javascript">
+    function LabelChanged() {
+        $('#label-unique-message').empty();
+        $("span[data-valmsg-for='Label']").empty();
+        var label = $('#Label').val();
+        if (label == null || label == '') {
+            LabelValid(false, 'Label is required');
+            return;
+        };
+        $.get('@Url.RouteUrl("AreaTypeCodeForLabel")', { label: label }, function (code) {
+            if (code != null && code != '') {
+                LabelValid(false, 'This label already exists. Entered label must be unique.');
+                return;
+            }
+        });
+        LabelValid(true, null);
+    };
+
+    function LabelValid(isValid, message) {
+        var control = $('#label-feedback');
+        var parent = $('#label-group');
+        var messageControl = $('#label-unique-message');
+        var classToAdd = isValid ? 'glyphicon-ok' : 'glyphicon-remove';
+        var classToRemove = isValid ? 'glyphicon-remove' : 'glyphicon-ok';
+        var parentClassToAdd = isValid ? 'has-success' : 'has-error';
+        var parentClassToRemove = isValid ? 'has-error' : 'has-success';
+        if (control.hasClass(classToRemove)) control.removeClass(classToRemove);
+        if (!control.hasClass(classToAdd)) control.addClass(classToAdd);
+        if (parent.hasClass(parentClassToRemove)) parent.removeClass(parentClassToRemove);
+        if (!parent.hasClass(parentClassToAdd)) parent.addClass(parentClassToAdd);
+        messageControl.html(message);
+    };
+</script>
+
+<div id="label-group" class="form-group required has-feedback">
+    @Html.LabelFor(m => m.Label, new { @class = "col-xs-3 control-label" })
+    <div class="col-xs-4">
+        @Html.TextBoxFor(m => m.Label, new { @placeholder = "Name of area type", @autocomplete = "off", @class = "form-control input-sm", @onchange = "LabelChanged()" })
+        <span id="label-feedback" class="glyphicon form-control-feedback"></span>
+    </div>
+    <div class="col-xs-5">
+        <span id="label-unique-message" class="field-validation-error"></span>
+        @Html.ValidationMessageFor(m => m.Label)
+    </div>
+</div>
